@@ -18,6 +18,7 @@ public class ComponentController {
     @Autowired
     ComponentService componentService;
 
+
     @GetMapping("/components")
     public ResponseEntity<Iterable<Component>> getAll() {
         return ResponseEntity.ok(componentService.findAll());

@@ -1,0 +1,42 @@
+openapi: 3.0.0
+info:
+  title: HUBWarehouse API
+  description: API for managing warehouse components
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /component:
+    post:
+      summary: Add a new component
+      requestBody:
+        description: Component to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Component'
+      responses:
+        '201':
+          description: Component created
+        '400':
+          description: Invalid input
+components:
+  schemas:
+    Component:
+      type: object
+      properties:
+        partNumberComponent:
+          type: string
+        descriptionComponent:
+          type: string
+        detailDescriptionCmp:
+          type: string
+        amountComponent:
+          type: integer
+        rowComponent:
+          type: string
+        columnComponent:
+          type: string
+        manufacturerComponent:
+          type: string
