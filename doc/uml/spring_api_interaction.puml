@@ -1,0 +1,29 @@
+
+@startuml
+!define RECTANGLE class
+RECTANGLE ComponentController {
+  + addComponent(component: Component): ResponseEntity<Component>
+}
+RECTANGLE ComponentServiceImpl {
+  + addNewComponent(component: Component): Component
+  + findAll(): Iterable<Component>
+}
+RECTANGLE ExternalApiService {
+  + getComponentData(partNumber: String): ProductResponse
+}
+RECTANGLE TokenService {
+  + getAccessToken(): String
+}
+RECTANGLE RestTemplate
+RECTANGLE ComponentRepository {
+  + save(component: Component): Component
+  + findAll(): Iterable<Component>
+}
+
+ComponentController --> ComponentServiceImpl : calls
+ComponentServiceImpl --> ExternalApiService : calls
+ExternalApiService --> TokenService : gets token
+ExternalApiService --> RestTemplate : uses
+ComponentServiceImpl --> ComponentRepository : saves component
+
+@enduml
