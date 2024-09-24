@@ -6,6 +6,8 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
+
 @Service
 public class TokenService {
 
@@ -20,11 +22,24 @@ public class TokenService {
 
     private final RestTemplate restTemplate;
 
+    private String accessToken;
+    private Instant expirationTime;
+
     public TokenService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
+    // Método para obtener un token válido
     public String getAccessToken() {
+        // Verifica si el token es válido o si ha expirado
+        if (accessToken == null || Instant.now().isAfter(expirationTime)) {
+            requestNewToken(); // Si no es válido o ha expirado, solicita un nuevo token
+        }
+        return accessToken;
+    }
+
+    // Método para solicitar un nuevo token
+    private void requestNewToken() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -34,7 +49,15 @@ public class TokenService {
 
         ResponseEntity<TokenResponse> response = restTemplate.exchange(tokenUrl, HttpMethod.POST, request, TokenResponse.class);
 
-        return response.getBody().getAccessToken();  // Aquí asegúrate de que obtienes el token correctamente.
+        if (response.getStatusCode().is2xxSuccessful()) {
+            this.accessToken = response.getBody().getAccessToken();
+            int expiresIn = response.getBody().getExpiresIn(); // Tiempo de expiración en segundos
+
+            // Calcula el tiempo de expiración
+            this.expirationTime = Instant.now().plusSeconds(expiresIn);
+        } else {
+            throw new RuntimeException("Error al solicitar el token: " + response.getStatusCode());
+        }
     }
 
     // Clase interna para mapear la respuesta del token
@@ -42,12 +65,23 @@ public class TokenService {
         @JsonProperty("access_token")
         private String accessToken;
 
+        @JsonProperty("expires_in")
+        private int expiresIn; // Tiempo de vida del token en segundos
+
         public String getAccessToken() {
             return accessToken;
         }
 
         public void setAccessToken(String accessToken) {
             this.accessToken = accessToken;
+        }
+
+        public int getExpiresIn() {
+            return expiresIn;
+        }
+
+        public void setExpiresIn(int expiresIn) {
+            this.expiresIn = expiresIn;
         }
     }
 }
