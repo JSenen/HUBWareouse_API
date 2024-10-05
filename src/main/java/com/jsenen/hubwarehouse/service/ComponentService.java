@@ -6,4 +6,6 @@ public interface ComponentService {
     Iterable<Component> findAll();
 
     Component addNewComponent(Component component);
+
+    void deleteComponent(long id);
 }

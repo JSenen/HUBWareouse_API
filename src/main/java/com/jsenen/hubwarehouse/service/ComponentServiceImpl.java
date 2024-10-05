@@ -37,4 +37,10 @@ public class ComponentServiceImpl implements ComponentService{
 
         return componentNew;
     }
+
+    @Override
+    public void deleteComponent(long id) {
+        componentRepository.deleteById(id);
+
+    }
 }
