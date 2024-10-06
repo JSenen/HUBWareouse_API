@@ -29,7 +29,7 @@ public class ComponentController {
         return ResponseEntity.ok(componentService.findAll());
     }
 
-    @GetMapping("/components/{partNumber}")
+    @GetMapping("/components/search/{partNumber}")
     public ResponseEntity<Component> searchComponet(@PathVariable("partNumber") String partNumber) {
         logger.info(" searchComponetByPartNumber: " + partNumber,TAG);
         Optional<Component> searchPart = componentService.findByPartNumber(partNumber);
