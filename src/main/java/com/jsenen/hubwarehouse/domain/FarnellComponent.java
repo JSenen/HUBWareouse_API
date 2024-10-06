@@ -54,12 +54,12 @@ public class FarnellComponent {
     @Column(name = "price")
     private double price;
 
+    @Transient
+    private Image image;
+
     // Campos transitorios que no se almacenan en la base de datos
     @Transient
     private List<Price> prices;
-
-    @Transient
-    private Image image;
 
     @Transient
     private List<Attribute> attributes;

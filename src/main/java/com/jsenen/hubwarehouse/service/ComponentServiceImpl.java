@@ -75,7 +75,7 @@ public class ComponentServiceImpl implements ComponentService{
         String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .queryParam("versionNumber", "1.3")
                 .queryParam("term", "manuPartNum:" + productNumber)
-                .queryParam("storeInfo.id", "uk.farnell.com")
+                .queryParam("storeInfo.id", "es.farnell.com")
                 .queryParam("resultsSettings.offset", "0")
                 .queryParam("resultsSettings.numberOfResults", "1")
                 .queryParam("resultsSettings.refinements.filters", "rohsCompliant,inStock")
@@ -95,7 +95,7 @@ public class ComponentServiceImpl implements ComponentService{
 
             // Verificar si la respuesta es correcta
             if (response.getStatusCode().is2xxSuccessful()) {
-                // Aquí puedes procesar el JSON que recibiste y convertirlo en tu objeto FarnellComponent
+                // Procesar el JSON que recibiste y convertirlo en tu objeto FarnellComponent
                 String jsonResponse = response.getBody();
 
                 // Convierte el JSON de la API a tu objeto FarnellComponent
