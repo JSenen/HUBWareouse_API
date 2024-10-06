@@ -16,4 +16,6 @@ public interface ComponentService {
     Optional<Component> findByPartNumber(String partNumber);
 
     FarnellComponent searchPNumberFarnell(String productNumber);
+
+    Component addNewComponentFromWeb(Component component);
 }

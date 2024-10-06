@@ -60,6 +60,14 @@ public class ComponentController {
         Component componentNew = componentService.addNewComponent(component);
         return ResponseEntity.status(HttpStatus.CREATED).body(componentNew);
     }
+    @PostMapping("/component/addnew")
+    public ResponseEntity<Component> addNewComponent(@RequestBody Component component) {
+        logger.info(" Save new component from webapp: " + component,TAG);
+        // Llamar al servicio para agregar el nuevo componente
+        Component componentNew = componentService.addNewComponentFromWeb(component);
+        return ResponseEntity.status(HttpStatus.CREATED).body(componentNew);
+    }
+
 
     @DeleteMapping("components/{idComponent}")
     public ResponseEntity<Void> delDepartment(@PathVariable("idComponent") long id) {

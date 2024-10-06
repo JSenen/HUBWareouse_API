@@ -131,5 +131,10 @@ public class ComponentServiceImpl implements ComponentService{
             return null;
         }
     }
+
+    @Override
+    public Component addNewComponentFromWeb(Component component) {
+        return componentRepository.save(component);
+    }
 }
 

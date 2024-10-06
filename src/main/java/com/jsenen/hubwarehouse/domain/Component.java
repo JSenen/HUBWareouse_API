@@ -39,6 +39,6 @@ public class Component {
 
     // Campos adicionales
 
-    @Column(name = "technical_attributes")
+    @Column(name = "technical_attributes", length = Integer.MAX_VALUE)
     private String technicalAttributes;  // Aquí guardamos los atributos técnicos como JSON
 }
