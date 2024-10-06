@@ -1,6 +1,7 @@
 package com.jsenen.hubwarehouse.controller;
 
 import com.jsenen.hubwarehouse.domain.Component;
+import com.jsenen.hubwarehouse.domain.FarnellComponent;
 import com.jsenen.hubwarehouse.service.ComponentService;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
@@ -28,6 +29,18 @@ public class ComponentController {
         logger.info(" gelAllComponents()",TAG);
         return ResponseEntity.ok(componentService.findAll());
     }
+
+    @GetMapping("/farnell/{productNumber}")
+    public ResponseEntity<FarnellComponent> getFarnell(@PathVariable("productNumber") String productNumber) {
+        logger.info("Searching in Farnell API for part number: " + productNumber);
+        FarnellComponent component = componentService.searchPNumberFarnell(productNumber);
+        if (component != null) {
+            return ResponseEntity.ok(component);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 
     @GetMapping("/components/search/{partNumber}")
     public ResponseEntity<Component> searchComponet(@PathVariable("partNumber") String partNumber) {

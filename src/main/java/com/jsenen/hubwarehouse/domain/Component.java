@@ -15,18 +15,30 @@ public class Component {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_component")
     private long idComponent;
+
     @Column(name = "pn_component")
     private String partNumberComponent;
+
     @Column(name = "description_component")
     private String descriptionComponent;
+
     @Column(name = "detail_description")
     private String detailDescriptionCmp;
+
     @Column(name = "amount_component")
     private int amountComponent;
+
     @Column(name = "row_component")
     private String rowComponent;
+
     @Column(name = "column_component")
     private String columnComponent;
+
     @Column(name = "manufacturer_component")
     private String manufacturerComponent;
+
+    // Campos adicionales
+
+    @Column(name = "technical_attributes", columnDefinition = "TEXT")
+    private String technicalAttributes;  // Aquí guardamos los atributos técnicos como JSON
 }

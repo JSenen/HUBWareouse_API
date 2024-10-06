@@ -1,6 +1,7 @@
 package com.jsenen.hubwarehouse.service;
 
 import com.jsenen.hubwarehouse.domain.Component;
+import com.jsenen.hubwarehouse.domain.FarnellComponent;
 
 import java.util.Optional;
 
@@ -13,4 +14,6 @@ public interface ComponentService {
 
 
     Optional<Component> findByPartNumber(String partNumber);
+
+    FarnellComponent searchPNumberFarnell(String productNumber);
 }

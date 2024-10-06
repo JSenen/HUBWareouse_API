@@ -1,5 +1,6 @@
 package com.jsenen.hubwarehouse.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "farnellcomponents")
+@JsonIgnoreProperties(ignoreUnknown = true)  // Ignorar campos desconocidos
 public class FarnellComponent {
 
     @Id
@@ -52,7 +54,8 @@ public class FarnellComponent {
     @Column(name = "price")
     private double price;
 
-    @Transient // Para evitar que se guarde en la base de datos
+    // Campos transitorios que no se almacenan en la base de datos
+    @Transient
     private List<Price> prices;
 
     @Transient
@@ -60,6 +63,4 @@ public class FarnellComponent {
 
     @Transient
     private List<Attribute> attributes;
-
-    // Agrega otros campos que puedas necesitar
 }
