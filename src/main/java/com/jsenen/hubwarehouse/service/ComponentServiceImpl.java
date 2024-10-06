@@ -6,6 +6,8 @@ import com.jsenen.hubwarehouse.repository.ComponentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ComponentServiceImpl implements ComponentService{
 
@@ -42,5 +44,10 @@ public class ComponentServiceImpl implements ComponentService{
     public void deleteComponent(long id) {
         componentRepository.deleteById(id);
 
+    }
+
+    @Override
+    public Optional<Component> findByPartNumber(String partNumber) {
+        return componentRepository.findByPartNumberComponent(partNumber);
     }
 }

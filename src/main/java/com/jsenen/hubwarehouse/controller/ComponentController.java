@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ComponentController {
@@ -20,6 +21,17 @@ public class ComponentController {
     @GetMapping("/components")
     public ResponseEntity<Iterable<Component>> getAll() {
         return ResponseEntity.ok(componentService.findAll());
+    }
+
+    @GetMapping("/components/{partNumber}")
+    public ResponseEntity<Component> searchComponet(@PathVariable("partNumber") String partNumber) {
+        Optional<Component> searchPart = componentService.findByPartNumber(partNumber);
+
+        if (searchPart.isPresent()) {
+            return ResponseEntity.ok(searchPart.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Devolver 404 si no se encuentra
+        }
     }
 
     @PostMapping("/component")
