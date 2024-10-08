@@ -37,6 +37,9 @@ public class Component {
     @Column(name = "manufacturer_component")
     private String manufacturerComponent;
 
+    @Column(name = "img")
+    private byte[] image;
+
     // Campos adicionales
 
     @Column(name = "technical_attributes", length = Integer.MAX_VALUE)
