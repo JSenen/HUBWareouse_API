@@ -6,6 +6,7 @@ import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.FarnellApiResponse;
 import com.jsenen.hubwarehouse.domain.FarnellComponent;
 import com.jsenen.hubwarehouse.domain.ProductResponse;
+import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.repository.ComponentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ public class ComponentServiceImpl implements ComponentService{
         component.setDetailDescriptionCmp(productResponse.getProduct().getDescription().getDetailedDescription());
         component.setManufacturerComponent(productResponse.getProduct().getManufacturer().getName());
 
-        // Ahora guardamos el componente en la base de datos
+                // Ahora guardamos el componente en la base de datos
         Component componentNew = componentRepository.save(component);
 
         return componentNew;
@@ -135,6 +136,30 @@ public class ComponentServiceImpl implements ComponentService{
     @Override
     public Component addNewComponentFromWeb(Component component) {
         return componentRepository.save(component);
+    }
+
+    @Override
+    public Component updateComponent(long id, Component component) throws EntityNotFound {
+        Component componentToEdit = componentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFound("El usuario no se encuentra"));
+        componentToEdit.setDescriptionComponent(component.getDescriptionComponent());
+
+
+        // Actualizar los campos del componente existente con los datos del componente actualizado
+        componentToEdit.setPartNumberComponent(component.getPartNumberComponent());
+        componentToEdit.setDescriptionComponent(component.getDescriptionComponent());
+        componentToEdit.setDetailDescriptionCmp(component.getDetailDescriptionCmp());
+        componentToEdit.setAmountComponent(component.getAmountComponent());
+        componentToEdit.setRowComponent(component.getRowComponent());
+        componentToEdit.setColumnComponent(component.getColumnComponent());
+        componentToEdit.setManufacturerComponent(component.getManufacturerComponent());
+        componentToEdit.setTechnicalAttributes(component.getTechnicalAttributes());
+        return componentRepository.save(componentToEdit);
+    }
+
+    @Override
+    public Optional<Component> findById(long idComponent) {
+        return componentRepository.findById(idComponent);
     }
 }
 

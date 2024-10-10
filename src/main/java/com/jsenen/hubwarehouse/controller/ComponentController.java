@@ -2,6 +2,7 @@ package com.jsenen.hubwarehouse.controller;
 
 import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.FarnellComponent;
+import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.service.ComponentService;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
@@ -41,11 +42,29 @@ public class ComponentController {
         }
     }
 
+    @PutMapping("/component/edit/{idComponent}")
+    public ResponseEntity<Component> editComponent (@PathVariable("idComponent") long id, @RequestBody Component component) throws EntityNotFound {
+        Component componentToEdit = componentService.updateComponent(id, component);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(componentToEdit);
+    }
 
     @GetMapping("/components/search/{partNumber}")
     public ResponseEntity<Component> searchComponet(@PathVariable("partNumber") String partNumber) {
         logger.info(" searchComponetByPartNumber: " + partNumber,TAG);
         Optional<Component> searchPart = componentService.findByPartNumber(partNumber);
+
+        if (searchPart.isPresent()) {
+            return ResponseEntity.ok(searchPart.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Devolver 404 si no se encuentra
+        }
+    }
+
+    @GetMapping("/component/search/{IdComponent}")
+    public ResponseEntity<Component> searchComponentById(@PathVariable("IdComponent") String idComponent) {
+        logger.info(" searchComponetById: " + idComponent,TAG);
+        long idLong = Long.parseLong(idComponent);
+        Optional<Component> searchPart = componentService.findById(idLong);
 
         if (searchPart.isPresent()) {
             return ResponseEntity.ok(searchPart.get());
