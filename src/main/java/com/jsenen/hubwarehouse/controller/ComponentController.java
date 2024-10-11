@@ -4,7 +4,13 @@ import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.FarnellComponent;
 import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.service.ComponentService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Tag(name = "Component", description = "This controller contains all the endpoints that can manage components")
 public class ComponentController {
 
     private final static Logger logger = LoggerFactory.getLogger(ComponentController.class);
@@ -25,6 +32,16 @@ public class ComponentController {
     ComponentService componentService;
 
 
+    @Operation(
+            summary = "Retrieve all components on data base",
+            description = "Retrieve all components on data base.",
+            tags = { "Component"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Component.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+    })
     @GetMapping("/components")
     public ResponseEntity<Iterable<Component>> getAll() {
         logger.info(" gelAllComponents()",TAG);
