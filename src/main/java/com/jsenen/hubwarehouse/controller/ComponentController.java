@@ -48,8 +48,19 @@ public class ComponentController {
         return ResponseEntity.ok(componentService.findAll());
     }
 
+    @Operation(
+            summary = "Retrieve a Farnell component by Product Number ",
+            description = "Retrieve a Farnell component by Product Number ",
+            tags = { "Farnell Component"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = FarnellComponent.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+    })
+
     @GetMapping("/farnell/{productNumber}")
-    public ResponseEntity<FarnellComponent> getFarnell(@PathVariable("productNumber") String productNumber) {
+    public ResponseEntity<FarnellComponent> getFarnell(@Parameter(description = "Partnumber of component") @PathVariable("productNumber") String productNumber) {
         logger.info("Searching in Farnell API for part number: " + productNumber);
         FarnellComponent component = componentService.searchPNumberFarnell(productNumber);
         if (component != null) {
@@ -59,15 +70,36 @@ public class ComponentController {
         }
     }
 
+    @Operation(
+            summary = "Update component by ID ",
+            description = "Retrieve component by ID  ",
+            tags = { "Component"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Component.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+    })
     @PutMapping("/component/edit/{idComponent}")
-    public ResponseEntity<Component> editComponent (@PathVariable("idComponent") long id, @RequestBody Component component) throws EntityNotFound {
+    public ResponseEntity<Component> editComponent (@Parameter(description = "Id of Component") @PathVariable("idComponent") long id, @RequestBody Component component) throws EntityNotFound {
         logger.info("Patch component id:)" + id + "and component" + component);
         Component componentToEdit = componentService.updateComponent(id, component);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(componentToEdit);
     }
 
+    @Operation(
+            summary = "Search component by partnumber",
+            description = "Search component by partnumber",
+            tags = {"Component"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Component.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+    })
     @GetMapping("/components/search/{partNumber}")
-    public ResponseEntity<Component> searchComponet(@PathVariable("partNumber") String partNumber) {
+    public ResponseEntity<Component> searchComponet(@Parameter(description = "Partnumber") @PathVariable("partNumber") String partNumber) {
         logger.info(" searchComponetByPartNumber: " + partNumber,TAG);
         Optional<Component> searchPart = componentService.findByPartNumber(partNumber);
 
@@ -78,6 +110,17 @@ public class ComponentController {
         }
     }
 
+    @Operation(
+            summary = "Search component by ID",
+            description = "Search component by ID",
+            tags = {"Component"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Component.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+    })
     @GetMapping("/component/search/{IdComponent}")
     public ResponseEntity<Component> searchComponentById(@PathVariable("IdComponent") String idComponent) {
         logger.info(" searchComponetById: " + idComponent,TAG);
@@ -91,12 +134,35 @@ public class ComponentController {
         }
     }
 
+    @Operation(
+            summary = "Add new component from DigiKey API",
+            description = "Add new component from DigiKey API",
+            tags = {"Component"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Component.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+    })
     @PostMapping("/component")
     public ResponseEntity<Component> addComponent(@RequestBody Component component) {
         // Llamar al servicio para agregar el nuevo componente
         Component componentNew = componentService.addNewComponent(component);
         return ResponseEntity.status(HttpStatus.CREATED).body(componentNew);
     }
+
+    @Operation(
+            summary = "Add new component from WebApp",
+            description = "Add new component from WebApp",
+            tags = {"Component"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Component.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+    })
     @PostMapping("/component/addnew")
     public ResponseEntity<Component> addNewComponent(@RequestBody Component component) {
         logger.info(" Save new component from webapp: " + component,TAG);
@@ -105,9 +171,19 @@ public class ComponentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(componentNew);
     }
 
-
+    @Operation(
+            summary = "Delete component",
+            description = "Delete component search by ID",
+            tags = {"Component"}
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Component.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+    })
     @DeleteMapping("components/{idComponent}")
-    public ResponseEntity<Void> delDepartment(@PathVariable("idComponent") long id) {
+    public ResponseEntity<Void> delDepartment(@Parameter(description = "Id component") @PathVariable("idComponent") long id) {
 
         componentService.deleteComponent(id);
         return ResponseEntity.noContent().build();
