@@ -42,7 +42,7 @@ public class ComponentController {
         }
     }
 
-    @PutMapping("/component/edit/{idComponent}")
+    @PatchMapping("/component/edit/{idComponent}")
     public ResponseEntity<Component> editComponent (@PathVariable("idComponent") long id, @RequestBody Component component) throws EntityNotFound {
         Component componentToEdit = componentService.updateComponent(id, component);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(componentToEdit);
