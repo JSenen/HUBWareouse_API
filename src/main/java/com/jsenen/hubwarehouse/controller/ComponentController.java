@@ -148,6 +148,7 @@ public class ComponentController {
     @PostMapping("/component")
     public ResponseEntity<Component> addComponent(@RequestBody Component component) {
         // Llamar al servicio para agregar el nuevo componente
+        logger.info("Save component " + component,TAG);
         Component componentNew = componentService.addNewComponent(component);
         return ResponseEntity.status(HttpStatus.CREATED).body(componentNew);
     }
@@ -165,7 +166,7 @@ public class ComponentController {
     })
     @PostMapping("/component/addnew")
     public ResponseEntity<Component> addNewComponent(@RequestBody Component component) {
-        logger.info(" Save new component from webapp: " + component,TAG);
+        logger.info(" Add new component: " + component,TAG);
         // Llamar al servicio para agregar el nuevo componente
         Component componentNew = componentService.addNewComponentFromWeb(component);
         return ResponseEntity.status(HttpStatus.CREATED).body(componentNew);
@@ -184,7 +185,7 @@ public class ComponentController {
     })
     @DeleteMapping("components/{idComponent}")
     public ResponseEntity<Void> delDepartment(@Parameter(description = "Id component") @PathVariable("idComponent") long id) {
-
+        logger.info("Delete component ID: " + id);
         componentService.deleteComponent(id);
         return ResponseEntity.noContent().build();
     }
