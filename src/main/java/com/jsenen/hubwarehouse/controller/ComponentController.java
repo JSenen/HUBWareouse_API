@@ -4,6 +4,8 @@ import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.FarnellComponent;
 import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.service.ComponentService;
+import com.jsenen.hubwarehouse.service.DigikeyService;
+import com.jsenen.hubwarehouse.service.OAuth2Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,6 +32,9 @@ public class ComponentController {
 
     @Autowired
     ComponentService componentService;
+
+    @Autowired
+    DigikeyService digikeyService;
 
 
     @Operation(
@@ -71,8 +76,18 @@ public class ComponentController {
     }
 
     //TODO GET DIGIKEY DESCRIPTIONS
-    //@GetMapping("/digikey/{productNumber}")
+    @GetMapping("/digikey/{productNumber}")
+    public ResponseEntity<Component> getComponentFromDigikey(@PathVariable String productNumber) {
 
+        logger.info("Searching in DigiKey API for part number: " + productNumber);
+        Component component = digikeyService.getComponentData(productNumber);
+
+        if (component != null) {
+            return ResponseEntity.ok(component);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @Operation(
             summary = "Update component by ID ",
             description = "Retrieve component by ID  ",
