@@ -70,6 +70,9 @@ public class ComponentController {
         }
     }
 
+    //TODO GET DIGIKEY DESCRIPTIONS
+    //@GetMapping("/digikey/{productNumber}")
+
     @Operation(
             summary = "Update component by ID ",
             description = "Retrieve component by ID  ",
