@@ -10,7 +10,6 @@ import org.springframework.http.*;
 import com.jsenen.hubwarehouse.domain.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import com.jsenen.hubwarehouse.config.AppConfig.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -75,10 +74,11 @@ public class DigikeyService {
         Map<String, Object> manufacturer = (Map<String, Object>) product.get("Manufacturer");
         component.setManufacturerComponent((String) manufacturer.get("Name"));
 
-        // Guardar la URL de la imagen del producto
+        // Guardar la URL de la imagen del producto directamente como String
         String imageUrl = (String) product.get("PhotoUrl");
-        component.setImage(downloadImage(imageUrl));  // Aquí puedes descargar la imagen si es necesario
-        logger.info("Respuesta completa de la API de DIGIKEY PHOTOURL: " + imageUrl);
+
+        component.setImage(imageUrl);  // Asignar directamente la URL en lugar de descargar la imagen
+
 
         // Mapear parámetros técnicos
         List<Map<String, Object>> parameters = (List<Map<String, Object>>) product.get("Parameters");
@@ -94,8 +94,5 @@ public class DigikeyService {
         return component;
     }
 
-    private byte[] downloadImage(String imageUrl) {
-        // Método opcional para descargar la imagen y guardarla en formato byte[]
-        return null;  // Implementar si es necesario
-    }
+
 }
