@@ -4,6 +4,8 @@ import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.FarnellComponent;
 import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.service.ComponentService;
+import com.jsenen.hubwarehouse.service.DigikeyService;
+import com.jsenen.hubwarehouse.service.OAuth2Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,6 +33,9 @@ public class ComponentController {
     @Autowired
     ComponentService componentService;
 
+    @Autowired
+    DigikeyService digikeyService;
+
 
     @Operation(
             summary = "Retrieve all components on data base",
@@ -51,7 +56,7 @@ public class ComponentController {
     @Operation(
             summary = "Retrieve a Farnell component by Product Number ",
             description = "Retrieve a Farnell component by Product Number ",
-            tags = { "Farnell Component"})
+            tags = { "Component"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
                     schema = @Schema(implementation = FarnellComponent.class)) }),
@@ -70,6 +75,30 @@ public class ComponentController {
         }
     }
 
+    @Operation(
+            summary = "Retrieve a DigiKey component by Product Number ",
+            description = "Retrieve a DigiKey component by Product Number ",
+            tags = { "Component"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Component.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found",
+                    content = @Content),
+    })
+    @GetMapping("/digikey/{productNumber}")
+    public ResponseEntity<Component> getComponentFromDigikey(@PathVariable String productNumber) {
+
+        logger.info("Searching in DigiKey API for part number: " + productNumber);
+        Component component = digikeyService.getComponentData(productNumber);
+
+        if (component != null) {
+            return ResponseEntity.ok(component);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @Operation(
             summary = "Update component by ID ",
             description = "Retrieve component by ID  ",
