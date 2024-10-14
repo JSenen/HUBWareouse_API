@@ -1,7 +1,6 @@
 package com.jsenen.hubwarehouse.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jsenen.hubwarehouse.controller.ComponentController;
 import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.FarnellApiResponse;
 import com.jsenen.hubwarehouse.domain.FarnellComponent;
@@ -135,6 +134,7 @@ public class ComponentServiceImpl implements ComponentService{
 
     @Override
     public Component addNewComponentFromWeb(Component component) {
+        logger.info(TAG,"New component to save " + component);
         return componentRepository.save(component);
     }
 
@@ -154,6 +154,7 @@ public class ComponentServiceImpl implements ComponentService{
         componentToEdit.setColumnComponent(component.getColumnComponent());
         componentToEdit.setManufacturerComponent(component.getManufacturerComponent());
         componentToEdit.setTechnicalAttributes(component.getTechnicalAttributes());
+        componentToEdit.setImage(component.getImage());
         return componentRepository.save(componentToEdit);
     }
 

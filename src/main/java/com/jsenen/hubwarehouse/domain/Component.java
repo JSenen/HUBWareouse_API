@@ -49,7 +49,7 @@ public class Component {
 
     @Column(name = "img")
     @Schema(description = "Component img", example ="")
-    private byte[] image;
+    private String image;
 
     // Campos adicionales
 
