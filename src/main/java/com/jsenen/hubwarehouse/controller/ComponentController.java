@@ -56,7 +56,7 @@ public class ComponentController {
     @Operation(
             summary = "Retrieve a Farnell component by Product Number ",
             description = "Retrieve a Farnell component by Product Number ",
-            tags = { "Farnell Component"})
+            tags = { "Component"})
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
                     schema = @Schema(implementation = FarnellComponent.class)) }),
@@ -75,7 +75,18 @@ public class ComponentController {
         }
     }
 
-    //TODO GET DIGIKEY DESCRIPTIONS
+    @Operation(
+            summary = "Retrieve a DigiKey component by Product Number ",
+            description = "Retrieve a DigiKey component by Product Number ",
+            tags = { "Component"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = { @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Component.class)) }),
+            @ApiResponse(responseCode = "400", description = "Invalid",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found",
+                    content = @Content),
+    })
     @GetMapping("/digikey/{productNumber}")
     public ResponseEntity<Component> getComponentFromDigikey(@PathVariable String productNumber) {
 
