@@ -1,6 +1,9 @@
 package com.jsenen.hubwarehouse.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jsenen.hubwarehouse.controller.ComponentController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -15,6 +18,8 @@ import java.util.Map;
 
 @Service
 public class DigikeyService {
+
+    private final static Logger logger = LoggerFactory.getLogger(DigikeyService.class);
 
     @Autowired
     private OAuth2Service oAuth2Service;
@@ -73,6 +78,7 @@ public class DigikeyService {
         // Guardar la URL de la imagen del producto
         String imageUrl = (String) product.get("PhotoUrl");
         component.setImage(downloadImage(imageUrl));  // Aquí puedes descargar la imagen si es necesario
+        logger.info("Respuesta completa de la API de DIGIKEY PHOTOURL: " + imageUrl);
 
         // Mapear parámetros técnicos
         List<Map<String, Object>> parameters = (List<Map<String, Object>>) product.get("Parameters");
