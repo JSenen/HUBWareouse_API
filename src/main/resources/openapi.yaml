@@ -1,0 +1,595 @@
+openapi: 3.0.0
+info:
+  title: HUBWarehouse API
+  description: API for managing warehouse components
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Component
+    description: This controller contains all the endpoints that can manage components
+paths:
+  /components:
+    get:
+      tags:
+        - Component
+      summary: Retrieve all components on data base
+      description: Retrieve all components on data base.
+      operationId: getCollectionResource-component-get_1_1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/CollectionModelEntityModelComponent"
+            application/x-spring-data-compact+json:
+              schema:
+                $ref: "#/components/schemas/CollectionModelEntityModelComponent"
+            text/uri-list:
+              schema:
+                type: string
+        "400":
+          description: Invalid
+
+  /component/edit/{idComponent}:
+    put:
+      tags:
+        - Component
+      summary: 'Update component by ID '
+      description: 'Retrieve component by ID  '
+      operationId: editComponent
+      parameters:
+        - name: idComponent
+          in: path
+          description: Id of Component
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Component"
+        required: true
+      responses:
+        "400":
+          description: Invalid
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Component"
+  /component:
+    post:
+      tags:
+        - Component
+      summary: Add new component from DigiKey API
+      description: Add new component from DigiKey API
+      operationId: addComponent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Component"
+        required: true
+      responses:
+        "400":
+          description: Invalid
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Component"
+  /component/addnew:
+    post:
+      tags:
+        - Component
+      summary: Add new component from WebApp
+      description: Add new component from WebApp
+      operationId: addNewComponent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Component"
+        required: true
+      responses:
+        "400":
+          description: Invalid
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Component"
+  /farnell/{productNumber}:
+    get:
+      tags:
+        - Farnell Component
+        - Component
+      summary: 'Retrieve a Farnell component by Product Number '
+      description: 'Retrieve a Farnell component by Product Number '
+      operationId: getFarnell
+      parameters:
+        - name: productNumber
+          in: path
+          description: Partnumber of component
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FarnellComponent"
+        "400":
+          description: Invalid
+  /components/search/{partNumber}:
+    get:
+      tags:
+        - Component
+      summary: Search component by partnumber
+      description: Search component by partnumber
+      operationId: searchComponet
+      parameters:
+        - name: partNumber
+          in: path
+          description: Partnumber
+          required: true
+          schema:
+            type: string
+      responses:
+        "400":
+          description: Invalid
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Component"
+  /component/search/{IdComponent}:
+    get:
+      tags:
+        - Component
+      summary: Search component by ID
+      description: Search component by ID
+      operationId: searchComponentById
+      parameters:
+        - name: IdComponent
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "400":
+          description: Invalid
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Component"
+  /components/{idComponent}:
+    delete:
+      tags:
+        - Component
+      summary: Delete component
+      description: Delete component search by ID
+      operationId: delDepartment
+      parameters:
+        - name: idComponent
+          in: path
+          description: Id component
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "400":
+          description: Invalid
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Component"
+components:
+  schemas:
+    AbstractJsonSchemaPropertyObject:
+      type: object
+      properties:
+        title:
+          type: string
+        readOnly:
+          type: boolean
+    Item:
+      type: object
+      properties:
+        type:
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/AbstractJsonSchemaPropertyObject"
+        requiredProperties:
+          type: array
+          items:
+            type: string
+    JsonSchema:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/AbstractJsonSchemaPropertyObject"
+        requiredProperties:
+          type: array
+          items:
+            type: string
+        definitions:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/Item"
+        type:
+          type: string
+        $schema:
+          type: string
+    Links:
+      type: object
+      additionalProperties:
+        $ref: "#/components/schemas/Link"
+    RepresentationModelObject:
+      type: object
+      properties:
+        _links:
+          $ref: "#/components/schemas/Links"
+    Attribute:
+      type: object
+      properties:
+        attributeLabel:
+          type: string
+        attributeValue:
+          type: string
+        attributeUnit:
+          type: string
+    CollectionModelEntityModelFarnellComponent:
+      type: object
+      properties:
+        _embedded:
+          type: object
+          properties:
+            farnellComponents:
+              type: array
+              items:
+                $ref: "#/components/schemas/EntityModelFarnellComponent"
+        _links:
+          $ref: "#/components/schemas/Links"
+    EntityModelFarnellComponent:
+      type: object
+      properties:
+        sku:
+          type: string
+        displayName:
+          type: string
+        productURL:
+          type: string
+        productStatus:
+          type: string
+        rohsStatusCode:
+          type: string
+        packSize:
+          type: integer
+          format: int32
+        unitOfMeasure:
+          type: string
+        vendorName:
+          type: string
+        brandName:
+          type: string
+        stockLevel:
+          type: integer
+          format: int32
+        price:
+          type: number
+          format: double
+        image:
+          $ref: "#/components/schemas/Image"
+        prices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Price"
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attribute"
+        _links:
+          $ref: "#/components/schemas/Links"
+    FarnellComponent:
+      type: object
+      properties:
+        idComponent:
+          type: integer
+          format: int64
+        sku:
+          type: string
+        displayName:
+          type: string
+        productURL:
+          type: string
+        productStatus:
+          type: string
+        rohsStatusCode:
+          type: string
+        packSize:
+          type: integer
+          format: int32
+        unitOfMeasure:
+          type: string
+        vendorName:
+          type: string
+        brandName:
+          type: string
+        stockLevel:
+          type: integer
+          format: int32
+        price:
+          type: number
+          format: double
+        image:
+          $ref: "#/components/schemas/Image"
+        prices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Price"
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attribute"
+    Image:
+      type: object
+      properties:
+        baseName:
+          type: string
+        mainImageURL:
+          type: string
+        thumbNailImageURL:
+          type: string
+    Price:
+      type: object
+      properties:
+        from:
+          type: integer
+          format: int32
+        to:
+          type: integer
+          format: int32
+        cost:
+          type: number
+          format: double
+        costIncTax:
+          type: number
+          format: double
+    CollectionModelEntityModelComponent:
+      type: object
+      properties:
+        _embedded:
+          type: object
+          properties:
+            components:
+              type: array
+              items:
+                $ref: "#/components/schemas/EntityModelComponent"
+        _links:
+          $ref: "#/components/schemas/Links"
+    Component:
+      type: object
+      properties:
+        idComponent:
+          type: integer
+          description: Component
+          format: int64
+          readOnly: true
+          example: 12
+        partNumberComponent:
+          type: string
+          description: Component partnumber
+          example: 231-4567AS
+        descriptionComponent:
+          type: string
+          description: Component description
+          example: "WURTH ELEKTRONIK - 173950336 - Convertidor DC/DC, Propósito General,"
+        detailDescriptionCmp:
+          type: string
+          description: Component detail
+          example: "Convertidor DC/DC, Propósito General, 1 Salida, 1.65 W, 3.3 V,\
+            \ 500 mA, MagI3C FDSM Series"
+        amountComponent:
+          type: integer
+          description: Component amount
+          format: int32
+          example: 42
+        rowComponent:
+          type: string
+          description: Component warehouse row
+          example: B
+        columnComponent:
+          type: string
+          description: Component warehouse column
+          example: "3"
+        manufacturerComponent:
+          type: string
+          description: Component manufacturer
+          example: "3"
+        image:
+          type: array
+          description: Component img
+          items:
+            type: string
+            description: Component img
+            format: byte
+        technicalAttributes:
+          type: string
+      description: Component attributes
+    EntityModelComponent:
+      type: object
+      properties:
+        partNumberComponent:
+          type: string
+          description: Component partnumber
+          example: 231-4567AS
+        descriptionComponent:
+          type: string
+          description: Component description
+          example: "WURTH ELEKTRONIK - 173950336 - Convertidor DC/DC, Propósito General,"
+        detailDescriptionCmp:
+          type: string
+          description: Component detail
+          example: "Convertidor DC/DC, Propósito General, 1 Salida, 1.65 W, 3.3 V,\
+            \ 500 mA, MagI3C FDSM Series"
+        amountComponent:
+          type: integer
+          description: Component amount
+          format: int32
+          example: 42
+        rowComponent:
+          type: string
+          description: Component warehouse row
+          example: B
+        columnComponent:
+          type: string
+          description: Component warehouse column
+          example: "3"
+        manufacturerComponent:
+          type: string
+          description: Component manufacturer
+          example: "3"
+        image:
+          type: array
+          description: Component img
+          items:
+            type: string
+            description: Component img
+            format: byte
+        technicalAttributes:
+          type: string
+        _links:
+          $ref: "#/components/schemas/Links"
+    ComponentRequestBody:
+      type: object
+      properties:
+        idComponent:
+          type: integer
+          description: Component
+          format: int64
+          readOnly: true
+          example: 12
+        partNumberComponent:
+          type: string
+          description: Component partnumber
+          example: 231-4567AS
+        descriptionComponent:
+          type: string
+          description: Component description
+          example: "WURTH ELEKTRONIK - 173950336 - Convertidor DC/DC, Propósito General,"
+        detailDescriptionCmp:
+          type: string
+          description: Component detail
+          example: "Convertidor DC/DC, Propósito General, 1 Salida, 1.65 W, 3.3 V,\
+            \ 500 mA, MagI3C FDSM Series"
+        amountComponent:
+          type: integer
+          description: Component amount
+          format: int32
+          example: 42
+        rowComponent:
+          type: string
+          description: Component warehouse row
+          example: B
+        columnComponent:
+          type: string
+          description: Component warehouse column
+          example: "3"
+        manufacturerComponent:
+          type: string
+          description: Component manufacturer
+          example: "3"
+        image:
+          type: array
+          description: Component img
+          items:
+            type: string
+            description: Component img
+            format: byte
+        technicalAttributes:
+          type: string
+      description: Component attributes
+    FarnellComponentRequestBody:
+      type: object
+      properties:
+        idComponent:
+          type: integer
+          format: int64
+        sku:
+          type: string
+        displayName:
+          type: string
+        productURL:
+          type: string
+        productStatus:
+          type: string
+        rohsStatusCode:
+          type: string
+        packSize:
+          type: integer
+          format: int32
+        unitOfMeasure:
+          type: string
+        vendorName:
+          type: string
+        brandName:
+          type: string
+        stockLevel:
+          type: integer
+          format: int32
+        price:
+          type: number
+          format: double
+        image:
+          $ref: "#/components/schemas/Image"
+        prices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Price"
+        attributes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attribute"
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+        hreflang:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        deprecation:
+          type: string
+        profile:
+          type: string
+        name:
+          type: string
+        templated:
+          type: boolean
