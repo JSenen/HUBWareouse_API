@@ -19,6 +19,7 @@ import java.util.Map;
 public class DigikeyService {
 
     private final static Logger logger = LoggerFactory.getLogger(DigikeyService.class);
+    private final String TAG = "DigiKeyService";
 
     @Autowired
     private OAuth2Service oAuth2Service;
@@ -34,6 +35,7 @@ public class DigikeyService {
 
     public Component getComponentData(String partNumber) {
         String token = oAuth2Service.getAccessToken();
+        logger.info("TOKEN: " + token, TAG);
 
         if (token == null) {
             System.out.println("No se pudo obtener el token OAuth2.");
@@ -51,6 +53,7 @@ public class DigikeyService {
         try {
             ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
             if (response.getBody() != null) {
+                logger.info("JSON DIGIKEY: " + response, TAG);
                 return mapToComponent(response.getBody());
             }
         } catch (HttpClientErrorException e) {
