@@ -110,8 +110,9 @@ public class ComponentController {
                     content = @Content),
     })
     @PutMapping("/component/edit/{idComponent}")
+    @CrossOrigin(origins = "http://localhost")
     public ResponseEntity<Component> editComponent (@Parameter(description = "Id of Component") @PathVariable("idComponent") long id, @RequestBody Component component) throws EntityNotFound {
-        logger.info("Patch component id:)" + id + "and component" + component);
+        logger.info("Patch component id:" + id + "and component" + component);
         Component componentToEdit = componentService.updateComponent(id, component);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(componentToEdit);
     }

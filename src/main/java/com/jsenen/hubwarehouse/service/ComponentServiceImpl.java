@@ -161,11 +161,11 @@ public class ComponentServiceImpl implements ComponentService{
 
         if (component.getAmountComponent() > 0) {
             // Restar la cantidad actual en lugar de sobrescribir
-            int nuevaCantidad = componentToEdit.getAmountComponent() - component.getAmountComponent();
-            if (nuevaCantidad < 0) {
-                throw new IllegalArgumentException("La cantidad no puede ser menor que 0.");
-            }
-            componentToEdit.setAmountComponent(nuevaCantidad);
+//            int nuevaCantidad = componentToEdit.getAmountComponent() - component.getAmountComponent();
+//            if (nuevaCantidad < 0) {
+//                throw new IllegalArgumentException("La cantidad no puede ser menor que 0.");
+//            }
+            componentToEdit.setAmountComponent(component.getAmountComponent());
         }
 
         if (component.getRowComponent() != null) {
