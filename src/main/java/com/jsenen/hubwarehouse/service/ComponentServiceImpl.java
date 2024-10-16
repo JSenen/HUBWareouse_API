@@ -144,23 +144,58 @@ public class ComponentServiceImpl implements ComponentService{
     @Override
     public Component updateComponent(long id, Component component) throws EntityNotFound {
         Component componentToEdit = componentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFound("El usuario no se encuentra"));
-        componentToEdit.setDescriptionComponent(component.getDescriptionComponent());
+                .orElseThrow(() -> new EntityNotFound("El componente no se encuentra"));
 
+        // Actualizar solo los campos necesarios
+        if (component.getPartNumberComponent() != null) {
+            componentToEdit.setPartNumberComponent(component.getPartNumberComponent());
+        }
 
-        // Actualizar los campos del componente existente con los datos del componente actualizado
-        componentToEdit.setPartNumberComponent(component.getPartNumberComponent());
-        componentToEdit.setDescriptionComponent(component.getDescriptionComponent());
-        componentToEdit.setDetailDescriptionCmp(component.getDetailDescriptionCmp());
-        componentToEdit.setAmountComponent(component.getAmountComponent());
-        componentToEdit.setRowComponent(component.getRowComponent());
-        componentToEdit.setColumnComponent(component.getColumnComponent());
-        componentToEdit.setManufacturerComponent(component.getManufacturerComponent());
-        componentToEdit.setTechnicalAttributes(component.getTechnicalAttributes());
-        componentToEdit.setImage(component.getImage());
-        componentToEdit.setDatasheets(component.getDatasheets());
+        if (component.getDescriptionComponent() != null) {
+            componentToEdit.setDescriptionComponent(component.getDescriptionComponent());
+        }
+
+        if (component.getDetailDescriptionCmp() != null) {
+            componentToEdit.setDetailDescriptionCmp(component.getDetailDescriptionCmp());
+        }
+
+        if (component.getAmountComponent() > 0) {
+            // Restar la cantidad actual en lugar de sobrescribir
+            int nuevaCantidad = componentToEdit.getAmountComponent() - component.getAmountComponent();
+            if (nuevaCantidad < 0) {
+                throw new IllegalArgumentException("La cantidad no puede ser menor que 0.");
+            }
+            componentToEdit.setAmountComponent(nuevaCantidad);
+        }
+
+        if (component.getRowComponent() != null) {
+            componentToEdit.setRowComponent(component.getRowComponent());
+        }
+
+        if (component.getColumnComponent() != null) {
+            componentToEdit.setColumnComponent(component.getColumnComponent());
+        }
+
+        if (component.getManufacturerComponent() != null) {
+            componentToEdit.setManufacturerComponent(component.getManufacturerComponent());
+        }
+
+        if (component.getTechnicalAttributes() != null) {
+            componentToEdit.setTechnicalAttributes(component.getTechnicalAttributes());
+        }
+
+        if (component.getImage() != null) {
+            componentToEdit.setImage(component.getImage());
+        }
+
+        if (component.getDatasheets() != null) {
+            componentToEdit.setDatasheets(component.getDatasheets());
+        }
+
+        // Guardar el componente actualizado en la base de datos
         return componentRepository.save(componentToEdit);
     }
+
 
     @Override
     public Optional<Component> findById(long idComponent) {
