@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -60,4 +62,9 @@ public class Component {
     @Column(name = "technical_attributes", length = Integer.MAX_VALUE)
     @Schema(description = "Component Attributes list", example ="")
     private String technicalAttributes;  // Aquí guardamos los atributos técnicos como JSON
+
+
+    @OneToMany(mappedBy = "component", cascade = CascadeType.ALL)
+    private List<ServiceOrderComponent> serviceOrderComponents; // Relación con la entidad intermedia
+
 }
