@@ -58,7 +58,9 @@ public class FarnellComponent {
     @Transient
     private Image image;
 
-    // Campos transitorios que no se almacenan en la base de datos
+    @Transient
+    private List<FarnellDataSheets> datasheets;
+
     @Transient
     private List<Price> prices;
 

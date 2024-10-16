@@ -79,8 +79,11 @@ public class DigikeyService {
 
         // Guardar la URL de la imagen del producto directamente como String
         String imageUrl = (String) product.get("PhotoUrl");
-
         component.setImage(imageUrl);  // Asignar directamente la URL en lugar de descargar la imagen
+
+        //Guardar la URL del datasheet como String
+        String datasheetURL = (String) product.get("DatasheetUrl");
+        component.setDatasheets(datasheetURL);
 
 
         // Mapear parámetros técnicos

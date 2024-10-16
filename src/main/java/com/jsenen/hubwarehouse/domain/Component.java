@@ -51,6 +51,10 @@ public class Component {
     @Schema(description = "Component img", example ="")
     private String image;
 
+    @Column(name = "datasheet")
+    @Schema( description = "Component datasheet", example = "")
+    private String datasheets;
+
     // Campos adicionales
 
     @Column(name = "technical_attributes", length = Integer.MAX_VALUE)

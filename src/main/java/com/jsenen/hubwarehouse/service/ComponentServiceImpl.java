@@ -135,6 +135,9 @@ public class ComponentServiceImpl implements ComponentService{
     @Override
     public Component addNewComponentFromWeb(Component component) {
         logger.info(TAG,"New component to save " + component);
+        // Verifica si la URL de datasheets e image están correctas antes de guardar
+        logger.info("URL de la imagen: " + component.getImage());
+        logger.info("URL del datasheet: " + component.getDatasheets());
         return componentRepository.save(component);
     }
 
@@ -155,6 +158,7 @@ public class ComponentServiceImpl implements ComponentService{
         componentToEdit.setManufacturerComponent(component.getManufacturerComponent());
         componentToEdit.setTechnicalAttributes(component.getTechnicalAttributes());
         componentToEdit.setImage(component.getImage());
+        componentToEdit.setDatasheets(component.getDatasheets());
         return componentRepository.save(componentToEdit);
     }
 
