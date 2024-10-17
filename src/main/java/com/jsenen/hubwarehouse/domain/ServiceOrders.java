@@ -9,6 +9,7 @@ import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,13 +29,15 @@ public class ServiceOrders {
     @Column(name = "so_status")
     private String status;
     @Column(name = "so_datestart")
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone = "UTC")
     private Date dateStart;
     @Column(name = "so_datafinish")
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy", timezone = "UTC")
     private Date dateFinish;
 
-    @OneToMany(mappedBy = "serviceOrder", cascade = CascadeType.ALL)
-    private List<ServiceOrderComponent> serviceOrderComponents; // Relación con la entidad intermedia
-
+    // Inicializa la lista para evitar NullPointerExceptions
+    @OneToMany(mappedBy = "serviceOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServiceOrderComponent> serviceOrderComponents = new ArrayList<>();
 }
+
+

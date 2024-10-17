@@ -9,12 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/so")
 @Tag(name = "ServiceOrder", description = "This controller contains all the endpoints that can manage service orders")
 public class ServiceOrderController {
 
@@ -24,14 +22,19 @@ public class ServiceOrderController {
     @Autowired
     ServiceOrderService serviceOrderService;
 
-    @GetMapping("/so")
+    @GetMapping("")
     public ResponseEntity<Iterable<ServiceOrders>> getAll() {
         logger.info(" getAllServiceOrders()",TAG);
         return ResponseEntity.ok(serviceOrderService.findAll());
     }
 
-    @PostMapping("/so/addnew")
+    @PostMapping("/addnew")
     public ResponseEntity<ServiceOrders> addComponent(@RequestBody ServiceOrders serviceOrders) {
+
+        // Log para verificar los valores de las fechas
+        logger.info("Fecha de inicio: " + serviceOrders.getDateStart());
+        logger.info("Fecha de fin: " + serviceOrders.getDateFinish());
+
         // Llamar al servicio para agregar el nuevo componente
         logger.info("Save ServiceOrder " + serviceOrders,TAG);
         ServiceOrders newServiceOrder= serviceOrderService.addNewServiceOrder(serviceOrders);
