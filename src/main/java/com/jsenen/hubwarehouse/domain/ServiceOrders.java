@@ -37,7 +37,7 @@ public class ServiceOrders {
 
     // Inicializa la lista para evitar NullPointerExceptions
     @OneToMany(mappedBy = "serviceOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ServiceOrderComponent> serviceOrderComponents = new ArrayList<>();
+    private List<ServiceOrderComponent> serviceOrderComponents;
 }
 
 

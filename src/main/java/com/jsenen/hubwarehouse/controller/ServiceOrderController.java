@@ -3,6 +3,7 @@ package com.jsenen.hubwarehouse.controller;
 import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.ServiceOrders;
 import com.jsenen.hubwarehouse.service.ServiceOrderService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +30,19 @@ public class ServiceOrderController {
     }
 
     @PostMapping("/addnew")
+    @CrossOrigin(origins = "http://localhost")
     public ResponseEntity<ServiceOrders> addComponent(@RequestBody ServiceOrders serviceOrders) {
-
-        // Log para verificar los valores de las fechas
         logger.info("Fecha de inicio: " + serviceOrders.getDateStart());
         logger.info("Fecha de fin: " + serviceOrders.getDateFinish());
 
-        // Llamar al servicio para agregar el nuevo componente
-        logger.info("Save ServiceOrder " + serviceOrders,TAG);
-        ServiceOrders newServiceOrder= serviceOrderService.addNewServiceOrder(serviceOrders);
-        return ResponseEntity.status(HttpStatus.CREATED).body(serviceOrders);
+        ServiceOrders newServiceOrder = serviceOrderService.addNewServiceOrder(serviceOrders);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newServiceOrder);
+    }
+
+    @DeleteMapping("/delete/{idServiceOrder}")
+    public ResponseEntity<Void> delServiceOrder(@PathVariable("idServiceOrder") long id) {
+        logger.info("Delete component ID: " + id);
+        serviceOrderService.deleteServiceOrder(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -29,6 +29,8 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
 
     @Override
     public ServiceOrders addNewServiceOrder(ServiceOrders serviceOrders) {
+
+
         // Si la lista de componentes es nula, inicializarla
         if (serviceOrders.getServiceOrderComponents() == null) {
             serviceOrders.setServiceOrderComponents(new ArrayList<>());
@@ -36,17 +38,24 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
 
         // Para cada componente en la orden de servicio
         for (ServiceOrderComponent soc : serviceOrders.getServiceOrderComponents()) {
-            // Recuperar el componente desde la base de datos
+            // Recuperar el componente desde la base de datos usando su id
             Component component = componentRepository.findById(soc.getComponent().getIdComponent())
                     .orElseThrow(() -> new RuntimeException("Componente no encontrado"));
 
-            // Establecer la relación entre la orden de servicio y el componente
+            // Asociar el componente con la orden de servicio
             soc.setServiceOrder(serviceOrders);
+
+            // Establecer el componente que se va a guardar
+            soc.setComponent(component);
         }
 
         // Guardar la orden de servicio en la base de datos
         return serviceOrderRepository.save(serviceOrders);
     }
 
+    @Override
+    public void deleteServiceOrder(long id) {
+        serviceOrderRepository.deleteById(id);
+    }
 
 }

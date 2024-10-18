@@ -6,4 +6,6 @@ public interface ServiceOrderService {
     Iterable<ServiceOrders> findAll();
 
     ServiceOrders addNewServiceOrder(ServiceOrders serviceOrders);
+
+    void deleteServiceOrder(long id);
 }
