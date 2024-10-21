@@ -3,6 +3,7 @@ package com.jsenen.hubwarehouse.controller;
 import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.FarnellComponent;
 import com.jsenen.hubwarehouse.exception.EntityNotFound;
+import com.jsenen.hubwarehouse.repository.ComponentRepository;
 import com.jsenen.hubwarehouse.service.ComponentService;
 import com.jsenen.hubwarehouse.service.DigikeyService;
 import com.jsenen.hubwarehouse.service.OAuth2Service;
@@ -35,6 +36,9 @@ public class ComponentController {
 
     @Autowired
     DigikeyService digikeyService;
+
+    @Autowired
+    ComponentRepository componentRepository;
 
 
     @Operation(
@@ -162,6 +166,13 @@ public class ComponentController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Devolver 404 si no se encuentra
         }
+    }
+
+    /* PARTIAL SEARCH */
+
+    @GetMapping("/component/search/partial")
+    public List<Component> searchComponents(@RequestParam String query) {
+        return componentRepository.findByPartNumberComponentContaining(query);
     }
 
     @Operation(
