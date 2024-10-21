@@ -172,7 +172,8 @@ public class ComponentController {
 
     @GetMapping("/component/search/partial")
     public List<Component> searchComponents(@RequestParam String query) {
-        return componentRepository.findByPartNumberComponentContaining(query);
+        // Buscar tanto en partNumberComponent como en descriptionComponent
+        return componentRepository.findByPartNumberComponentContainingOrDescriptionComponentContaining(query, query);
     }
 
     @Operation(

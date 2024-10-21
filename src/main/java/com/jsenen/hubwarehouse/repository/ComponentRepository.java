@@ -15,7 +15,7 @@ public interface ComponentRepository extends CrudRepository<Component,Long> {
 
     Optional<Component> findByPartNumberComponent(String partNumber);
 
-    // Este método genera una consulta con LIKE automáticamente
-    List<Component> findByPartNumberComponentContaining(String partNumberComponent);
+    // Método para buscar coincidencias parciales tanto en partNumberComponent como en descriptionComponent
+    List<Component> findByPartNumberComponentContainingOrDescriptionComponentContaining(String partNumberComponent, String descriptionComponent);
 
 }
