@@ -18,7 +18,7 @@ public class ServiceOrderComponent {
 
     @ManyToOne
     @JoinColumn(name = "service_order_id")
-    @JsonBackReference // Evita la serialización recursiva
+    @JsonBackReference
     private ServiceOrders serviceOrder;
 
     @ManyToOne

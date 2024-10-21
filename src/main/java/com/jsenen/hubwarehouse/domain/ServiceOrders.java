@@ -38,8 +38,7 @@ public class ServiceOrders {
 
     // Inicializa la lista para evitar NullPointerExceptions
     @OneToMany(mappedBy = "serviceOrder", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Evita la serialización recursiva
+    @JsonManagedReference
     private List<ServiceOrderComponent> serviceOrderComponents;
-
 
 }

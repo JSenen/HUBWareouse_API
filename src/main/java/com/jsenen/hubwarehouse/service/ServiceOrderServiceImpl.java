@@ -55,6 +55,7 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
             // Establecer el componente que se va a guardar
             soc.setComponent(component);
         }
+        serviceOrderRepository.save(serviceOrders);
         return serviceOrders;
     }
 

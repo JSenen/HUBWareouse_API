@@ -1,5 +1,6 @@
 package com.jsenen.hubwarehouse.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -63,8 +64,9 @@ public class Component {
     @Schema(description = "Component Attributes list", example ="")
     private String technicalAttributes;  // Aquí guardamos los atributos técnicos como JSON
 
-
-    @OneToMany(mappedBy = "component", cascade = CascadeType.ALL)
-    private List<ServiceOrderComponent> serviceOrderComponents; // Relación con la entidad intermedia
+    // Si tienes una relación hacia ServiceOrderComponent, asegúrate de usar @JsonBackReference o @JsonIgnore
+    @OneToMany(mappedBy = "component")
+    @JsonIgnore // Alternativa para evitar serialización recursiva
+    private List<ServiceOrderComponent> serviceOrderComponents;
 
 }
