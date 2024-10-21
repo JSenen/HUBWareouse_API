@@ -1,5 +1,6 @@
 package com.jsenen.hubwarehouse.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class ServiceOrderComponent {
 
     @ManyToOne
     @JoinColumn(name = "service_order_id")
+    @JsonBackReference // Evita la serialización recursiva
     private ServiceOrders serviceOrder;
 
     @ManyToOne

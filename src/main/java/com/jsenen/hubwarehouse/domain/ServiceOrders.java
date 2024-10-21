@@ -1,6 +1,7 @@
 package com.jsenen.hubwarehouse.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,7 +38,8 @@ public class ServiceOrders {
 
     // Inicializa la lista para evitar NullPointerExceptions
     @OneToMany(mappedBy = "serviceOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // Evita la serialización recursiva
     private List<ServiceOrderComponent> serviceOrderComponents;
+
+
 }
-
-

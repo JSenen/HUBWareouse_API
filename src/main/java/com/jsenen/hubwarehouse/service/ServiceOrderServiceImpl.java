@@ -1,10 +1,13 @@
 package com.jsenen.hubwarehouse.service;
 
+import com.jsenen.hubwarehouse.controller.ComponentController;
 import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.ServiceOrderComponent;
 import com.jsenen.hubwarehouse.domain.ServiceOrders;
 import com.jsenen.hubwarehouse.repository.ComponentRepository;
 import com.jsenen.hubwarehouse.repository.ServiceOrderRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,9 @@ import java.util.ArrayList;
 
 @Service
 public class ServiceOrderServiceImpl implements ServiceOrderService{
+
+    private final static Logger logger = LoggerFactory.getLogger(ServiceOrderServiceImpl.class);
+    private final String TAG = "ServiceOrderServiceImpl";
 
     @Autowired
     ServiceOrderRepository serviceOrderRepository;
@@ -38,6 +44,7 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
 
         // Para cada componente en la orden de servicio
         for (ServiceOrderComponent soc : serviceOrders.getServiceOrderComponents()) {
+            logger.info("Procesando componente con id: " + soc.getComponent().getIdComponent());
             // Recuperar el componente desde la base de datos usando su id
             Component component = componentRepository.findById(soc.getComponent().getIdComponent())
                     .orElseThrow(() -> new RuntimeException("Componente no encontrado"));
@@ -48,9 +55,7 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
             // Establecer el componente que se va a guardar
             soc.setComponent(component);
         }
-
-        // Guardar la orden de servicio en la base de datos
-        return serviceOrderRepository.save(serviceOrders);
+        return serviceOrders;
     }
 
     @Override
