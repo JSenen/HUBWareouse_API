@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class ServiceOrderServiceImpl implements ServiceOrderService{
@@ -63,6 +64,11 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
     @Override
     public void deleteServiceOrder(long id) {
         serviceOrderRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<ServiceOrders> findById(long idLong) {
+        return serviceOrderRepository.findById(idLong);
     }
 
 }

@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/so")
 @Tag(name = "ServiceOrder", description = "This controller contains all the endpoints that can manage service orders")
@@ -27,6 +29,19 @@ public class ServiceOrderController {
     public ResponseEntity<Iterable<ServiceOrders>> getAll() {
         logger.info(" getAllServiceOrders()",TAG);
         return ResponseEntity.ok(serviceOrderService.findAll());
+    }
+
+    @GetMapping("/{IdServiceOrder}")
+    public ResponseEntity<ServiceOrders> searchSOById(@PathVariable("IdServiceOrder") String idServiceOrder) {
+        logger.info(" searchSObyID: " + idServiceOrder,TAG);
+        long idLong = Long.parseLong(idServiceOrder);
+        Optional<ServiceOrders> searchSO = serviceOrderService.findById(idLong);
+
+        if (searchSO.isPresent()) {
+            return ResponseEntity.ok(searchSO.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Devolver 404 si no se encuentra
+        }
     }
 
     @PostMapping("/addnew")
