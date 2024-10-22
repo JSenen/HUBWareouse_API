@@ -56,6 +56,7 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
             soc.setComponent(component);
         }
         serviceOrderRepository.save(serviceOrders);
+        logger.info("ServiceOrders JSON : " + serviceOrders);
         return serviceOrders;
     }
 

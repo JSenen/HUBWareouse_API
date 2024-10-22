@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +20,7 @@ public class ServiceOrderComponent {
     @ManyToOne
     @JoinColumn(name = "service_order_id")
     @JsonBackReference
+    @ToString.Exclude
     private ServiceOrders serviceOrder;
 
     @ManyToOne
