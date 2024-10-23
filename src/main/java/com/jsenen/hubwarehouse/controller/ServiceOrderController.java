@@ -2,6 +2,7 @@ package com.jsenen.hubwarehouse.controller;
 
 import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.ServiceOrders;
+import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.service.ServiceOrderService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,4 +61,13 @@ public class ServiceOrderController {
         serviceOrderService.deleteServiceOrder(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/edit/{idServiceOrder}")
+    @CrossOrigin(origins = "http://localhost")
+    public ResponseEntity<ServiceOrders> editServiceOrder(@PathVariable("idServiceOrder") long id, @RequestBody ServiceOrders serviceOrders) throws EntityNotFound {
+        logger.info("Edit service order id: " + id + " and json: " + serviceOrders);
+        ServiceOrders serviceOrdersToEdit = serviceOrderService.updateServiceOrder(id, serviceOrders);
+        return ResponseEntity.status(HttpStatus.OK).body(serviceOrdersToEdit);  // Cambiar a 200 OK
+    }
+
 }

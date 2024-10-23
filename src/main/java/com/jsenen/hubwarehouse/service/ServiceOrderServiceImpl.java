@@ -4,6 +4,7 @@ import com.jsenen.hubwarehouse.controller.ComponentController;
 import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.ServiceOrderComponent;
 import com.jsenen.hubwarehouse.domain.ServiceOrders;
+import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.repository.ComponentRepository;
 import com.jsenen.hubwarehouse.repository.ServiceOrderRepository;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -71,4 +73,62 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
         return serviceOrderRepository.findById(idLong);
     }
 
+    @Override
+    public ServiceOrders updateServiceOrder(long id, ServiceOrders serviceOrders) throws EntityNotFound {
+        ServiceOrders serviceOrderToEdit = serviceOrderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFound("La orden de servicio no se encuentra"));
+
+        // Actualizar los campos principales
+        if (serviceOrders.getStatus() != null) {
+            serviceOrderToEdit.setStatus(serviceOrders.getStatus());
+        }
+
+        if (serviceOrders.getDateStart() != null) {
+            serviceOrderToEdit.setDateStart(serviceOrders.getDateStart());
+        }
+
+        if (serviceOrders.getDateFinish() != null) {
+            serviceOrderToEdit.setDateFinish(serviceOrders.getDateFinish());
+        }
+
+        // Manejar los componentes si se proporcionan
+        if (serviceOrders.getServiceOrderComponents() != null) {
+            List<ServiceOrderComponent> existingComponents = serviceOrderToEdit.getServiceOrderComponents();
+            List<Long> processedComponentIds = new ArrayList<>();
+
+            for (ServiceOrderComponent newComponent : serviceOrders.getServiceOrderComponents()) {
+                if (newComponent.getId() == null) {
+                    // Componente nuevo, agregarlo
+                    Component componentFromDb = componentRepository.findById(newComponent.getComponent().getIdComponent())
+                            .orElseThrow(() -> new EntityNotFound("El componente no se encuentra"));
+                    newComponent.setComponent(componentFromDb);
+                    newComponent.setServiceOrder(serviceOrderToEdit);
+                    existingComponents.add(newComponent);
+                } else {
+                    // Componente existente, actualizar cantidad
+                    ServiceOrderComponent existingComponent = existingComponents.stream()
+                            .filter(comp -> comp.getId().equals(newComponent.getId()))
+                            .findFirst()
+                            .orElseThrow(() -> new EntityNotFound("Componente no encontrado"));
+
+                    existingComponent.setQuantity(newComponent.getQuantity());
+                    existingComponent.setComponent(newComponent.getComponent());
+
+                    // Marcar componente como procesado
+                    processedComponentIds.add(existingComponent.getId());
+                }
+            }
+
+            // Mantener solo los componentes que fueron procesados (actualizados o añadidos)
+            existingComponents.removeIf(existingComponent -> !processedComponentIds.contains(existingComponent.getId()));
+
+            // Establecer los componentes actualizados en la orden de servicio
+            serviceOrderToEdit.setServiceOrderComponents(existingComponents);
+        }
+
+        return serviceOrderRepository.save(serviceOrderToEdit);
+    }
+
 }
+
+
