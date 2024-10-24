@@ -75,8 +75,12 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
 
     @Override
     public ServiceOrders updateServiceOrder(long id, ServiceOrders serviceOrders) throws EntityNotFound {
+        logger.info("Update Service Order id : " + id + " Service Order --> " + serviceOrders);
+
+        // Recuperar la orden de servicio existente desde la base de datos
         ServiceOrders serviceOrderToEdit = serviceOrderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFound("La orden de servicio no se encuentra"));
+
 
         // Actualizar los campos principales
         if (serviceOrders.getStatus() != null) {
@@ -94,7 +98,7 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
         // Manejar los componentes si se proporcionan
         if (serviceOrders.getServiceOrderComponents() != null) {
             List<ServiceOrderComponent> existingComponents = serviceOrderToEdit.getServiceOrderComponents();
-            List<Long> processedComponentIds = new ArrayList<>();
+            List<ServiceOrderComponent> updatedComponents = new ArrayList<>();
 
             for (ServiceOrderComponent newComponent : serviceOrders.getServiceOrderComponents()) {
                 if (newComponent.getId() == null) {
@@ -103,7 +107,7 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
                             .orElseThrow(() -> new EntityNotFound("El componente no se encuentra"));
                     newComponent.setComponent(componentFromDb);
                     newComponent.setServiceOrder(serviceOrderToEdit);
-                    existingComponents.add(newComponent);
+                    updatedComponents.add(newComponent);
                 } else {
                     // Componente existente, actualizar cantidad
                     ServiceOrderComponent existingComponent = existingComponents.stream()
@@ -112,22 +116,22 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
                             .orElseThrow(() -> new EntityNotFound("Componente no encontrado"));
 
                     existingComponent.setQuantity(newComponent.getQuantity());
-                    existingComponent.setComponent(newComponent.getComponent());
 
-                    // Marcar componente como procesado
-                    processedComponentIds.add(existingComponent.getId());
+                    // Añadir el componente actualizado a la nueva lista
+                    updatedComponents.add(existingComponent);
                 }
             }
 
-            // Mantener solo los componentes que fueron procesados (actualizados o añadidos)
-            existingComponents.removeIf(existingComponent -> !processedComponentIds.contains(existingComponent.getId()));
-
-            // Establecer los componentes actualizados en la orden de servicio
-            serviceOrderToEdit.setServiceOrderComponents(existingComponents);
+            // Establecer la nueva lista de componentes actualizada
+            serviceOrderToEdit.getServiceOrderComponents().clear();
+            serviceOrderToEdit.getServiceOrderComponents().addAll(updatedComponents);
         }
 
+        // Guardar la orden de servicio actualizada
         return serviceOrderRepository.save(serviceOrderToEdit);
     }
+
+
 
 }
 
