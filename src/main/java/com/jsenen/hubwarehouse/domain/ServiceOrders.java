@@ -26,6 +26,10 @@ public class ServiceOrders {
     private String orderNumber;
     @Column(name = "so_status")
     private String status;
+
+    @Column(name ="no_lotes")
+    private int lotes;
+
     @Column(name = "so_datestart")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date dateStart;
