@@ -3,6 +3,7 @@ package com.jsenen.hubwarehouse.controller;
 import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.FarnellComponent;
 import com.jsenen.hubwarehouse.exception.EntityNotFound;
+import com.jsenen.hubwarehouse.repository.ComponentRepository;
 import com.jsenen.hubwarehouse.service.ComponentService;
 import com.jsenen.hubwarehouse.service.DigikeyService;
 import com.jsenen.hubwarehouse.service.OAuth2Service;
@@ -35,6 +36,9 @@ public class ComponentController {
 
     @Autowired
     DigikeyService digikeyService;
+
+    @Autowired
+    ComponentRepository componentRepository;
 
 
     @Operation(
@@ -110,8 +114,9 @@ public class ComponentController {
                     content = @Content),
     })
     @PutMapping("/component/edit/{idComponent}")
+    @CrossOrigin(origins = "http://localhost")
     public ResponseEntity<Component> editComponent (@Parameter(description = "Id of Component") @PathVariable("idComponent") long id, @RequestBody Component component) throws EntityNotFound {
-        logger.info("Patch component id:)" + id + "and component" + component);
+        logger.info("Patch component id:" + id + "and component" + component);
         Component componentToEdit = componentService.updateComponent(id, component);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(componentToEdit);
     }
@@ -161,6 +166,14 @@ public class ComponentController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Devolver 404 si no se encuentra
         }
+    }
+
+    /* PARTIAL SEARCH */
+
+    @GetMapping("/component/search/partial")
+    public List<Component> searchComponents(@RequestParam String query) {
+        // Buscar tanto en partNumberComponent como en descriptionComponent
+        return componentRepository.findByPartNumberComponentContainingOrDescriptionComponentContaining(query, query);
     }
 
     @Operation(
