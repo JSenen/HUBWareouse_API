@@ -131,6 +131,10 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
         return serviceOrderRepository.save(serviceOrderToEdit);
     }
 
+    @Override
+    public List<ServiceOrders> searchByComponentId(long idComponent) {
+        return serviceOrderRepository.findByComponentId(idComponent);
+    }
 
 
 }

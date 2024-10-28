@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -68,6 +69,16 @@ public class ServiceOrderController {
         logger.info("Edit service order id: " + id + " and json: " + serviceOrders);
         ServiceOrders serviceOrdersToEdit = serviceOrderService.updateServiceOrder(id, serviceOrders);
         return ResponseEntity.status(HttpStatus.OK).body(serviceOrdersToEdit);  // Cambiar a 200 OK
+    }
+    @GetMapping("/component/{idComponent}")
+    public ResponseEntity<List<ServiceOrders>> searchSObyComponent(@PathVariable("idComponent") long id) {
+        logger.info("Search Service Orders by Component ID " + id);
+        List<ServiceOrders> serviceOrders = serviceOrderService.searchByComponentId(id);
+        if (!serviceOrders.isEmpty()) {
+            return ResponseEntity.ok(serviceOrders);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Devolver 404 si no se encuentra
+        }
     }
 
 }
