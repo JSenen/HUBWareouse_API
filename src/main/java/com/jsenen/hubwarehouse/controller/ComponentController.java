@@ -51,6 +51,7 @@ public class ComponentController {
             @ApiResponse(responseCode = "400", description = "Invalid",
                     content = @Content),
     })
+    @CrossOrigin(origins = "http://localhost")
     @GetMapping("/components")
     public ResponseEntity<Iterable<Component>> getAll() {
         logger.info(" gelAllComponents()",TAG);
@@ -68,6 +69,7 @@ public class ComponentController {
                     content = @Content),
     })
 
+    @CrossOrigin(origins = "http://localhost")
     @GetMapping("/farnell/{productNumber}")
     public ResponseEntity<FarnellComponent> getFarnell(@Parameter(description = "Partnumber of component") @PathVariable("productNumber") String productNumber) {
         logger.info("Searching in Farnell API for part number: " + productNumber);
@@ -78,6 +80,7 @@ public class ComponentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
 
     @Operation(
             summary = "Retrieve a DigiKey component by Product Number ",
@@ -91,6 +94,7 @@ public class ComponentController {
             @ApiResponse(responseCode = "404", description = "Not Found",
                     content = @Content),
     })
+    @CrossOrigin(origins = "http://localhost")
     @GetMapping("/digikey/{productNumber}")
     public ResponseEntity<Component> getComponentFromDigikey(@PathVariable String productNumber) {
 
@@ -132,6 +136,7 @@ public class ComponentController {
             @ApiResponse(responseCode = "400", description = "Invalid",
                     content = @Content),
     })
+    @CrossOrigin(origins = "http://localhost")
     @GetMapping("/components/search/{partNumber}")
     public ResponseEntity<Component> searchComponet(@Parameter(description = "Partnumber") @PathVariable("partNumber") String partNumber) {
         logger.info(" searchComponetByPartNumber: " + partNumber,TAG);
@@ -155,6 +160,7 @@ public class ComponentController {
             @ApiResponse(responseCode = "400", description = "Invalid",
                     content = @Content),
     })
+    @CrossOrigin(origins = "http://localhost")
     @GetMapping("/component/search/{IdComponent}")
     public ResponseEntity<Component> searchComponentById(@PathVariable("IdComponent") String idComponent) {
         logger.info(" searchComponetById: " + idComponent,TAG);
@@ -169,7 +175,7 @@ public class ComponentController {
     }
 
     /* PARTIAL SEARCH */
-
+    @CrossOrigin(origins = "http://localhost")
     @GetMapping("/component/search/partial")
     public List<Component> searchComponents(@RequestParam String query) {
         // Buscar tanto en partNumberComponent como en descriptionComponent
@@ -187,6 +193,7 @@ public class ComponentController {
             @ApiResponse(responseCode = "400", description = "Invalid",
                     content = @Content),
     })
+    @CrossOrigin(origins = "http://localhost")
     @PostMapping("/component")
     public ResponseEntity<Component> addComponent(@RequestBody Component component) {
         // Llamar al servicio para agregar el nuevo componente
@@ -206,6 +213,7 @@ public class ComponentController {
             @ApiResponse(responseCode = "400", description = "Invalid",
                     content = @Content),
     })
+    @CrossOrigin(origins = "http://localhost")
     @PostMapping("/component/addnew")
     public ResponseEntity<Component> addNewComponent(@RequestBody Component component) {
         logger.info(" Add new component: " + component,TAG);
@@ -225,6 +233,7 @@ public class ComponentController {
             @ApiResponse(responseCode = "400", description = "Invalid",
                     content = @Content),
     })
+    @CrossOrigin(origins = "http://localhost")
     @DeleteMapping("components/{idComponent}")
     public ResponseEntity<Void> delDepartment(@Parameter(description = "Id component") @PathVariable("idComponent") long id) {
         logger.info("Delete component ID: " + id);

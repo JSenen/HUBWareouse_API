@@ -26,13 +26,13 @@ public class ServiceOrderController {
 
     @Autowired
     ServiceOrderService serviceOrderService;
-
+    @CrossOrigin(origins = "http://localhost")
     @GetMapping("")
     public ResponseEntity<Iterable<ServiceOrders>> getAll() {
         logger.info(" getAllServiceOrders()",TAG);
         return ResponseEntity.ok(serviceOrderService.findAll());
     }
-
+    @CrossOrigin(origins = "http://localhost")
     @GetMapping("/{IdServiceOrder}")
     public ResponseEntity<ServiceOrders> searchSOById(@PathVariable("IdServiceOrder") String idServiceOrder) {
         logger.info(" searchSObyID: " + idServiceOrder,TAG);
@@ -55,7 +55,7 @@ public class ServiceOrderController {
         ServiceOrders newServiceOrder = serviceOrderService.addNewServiceOrder(serviceOrders);
         return ResponseEntity.status(HttpStatus.CREATED).body(newServiceOrder);
     }
-
+    @CrossOrigin(origins = "http://localhost")
     @DeleteMapping("/delete/{idServiceOrder}")
     public ResponseEntity<Void> delServiceOrder(@PathVariable("idServiceOrder") long id) {
         logger.info("Delete component ID: " + id);
@@ -70,6 +70,7 @@ public class ServiceOrderController {
         ServiceOrders serviceOrdersToEdit = serviceOrderService.updateServiceOrder(id, serviceOrders);
         return ResponseEntity.status(HttpStatus.OK).body(serviceOrdersToEdit);  // Cambiar a 200 OK
     }
+    @CrossOrigin(origins = "http://localhost")
     @GetMapping("/component/{idComponent}")
     public ResponseEntity<List<ServiceOrders>> searchSObyComponent(@PathVariable("idComponent") long id) {
         logger.info("Search Service Orders by Component ID " + id);
