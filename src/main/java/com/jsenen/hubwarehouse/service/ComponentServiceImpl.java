@@ -149,6 +149,7 @@ public class ComponentServiceImpl implements ComponentService{
         // Actualizar solo los campos necesarios
         if (component.getPartNumberComponent() != null) {
             componentToEdit.setPartNumberComponent(component.getPartNumberComponent());
+            logger.info(TAG,"Component update PN " + component.getPartNumberComponent());
         }
 
         if (component.getDescriptionComponent() != null) {
@@ -162,6 +163,7 @@ public class ComponentServiceImpl implements ComponentService{
         if (component.getAmountComponent() > 0) {
             //Amount come with from WebApp on the API request
             componentToEdit.setAmountComponent(component.getAmountComponent());
+            logger.info(TAG,"Component update Amount" + component.getAmountComponent());
         }
 
         if (component.getRowComponent() != null) {
