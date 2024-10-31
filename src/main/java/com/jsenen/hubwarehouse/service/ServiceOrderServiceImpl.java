@@ -36,32 +36,79 @@ public class ServiceOrderServiceImpl implements ServiceOrderService{
         return serviceOrders;
     }
 
-    @Override
-    public ServiceOrders addNewServiceOrder(ServiceOrders serviceOrders) {
+//    @Override
+//    public ServiceOrders addNewServiceOrder(ServiceOrders serviceOrders) {
+//
+//
+//        // Si la lista de componentes es nula, inicializarla
+//        if (serviceOrders.getServiceOrderComponents() == null) {
+//            serviceOrders.setServiceOrderComponents(new ArrayList<>());
+//        }
+//
+//        // Para cada componente en la orden de servicio
+//        for (ServiceOrderComponent soc : serviceOrders.getServiceOrderComponents()) {
+//            logger.info("Procesando componente con id: " + soc.getComponent().getIdComponent());
+//            // Recuperar el componente desde la base de datos usando su id
+//            Component component = componentRepository.findById(soc.getComponent().getIdComponent())
+//                    .orElseThrow(() -> new RuntimeException("Componente no encontrado"));
+//
+//            // Asociar el componente con la orden de servicio
+//            soc.setServiceOrder(serviceOrders);
+//
+//            // Establecer el componente que se va a guardar
+//            soc.setComponent(component);
+//        }
+//        serviceOrderRepository.save(serviceOrders);
+//        logger.info("ServiceOrders JSON : " + serviceOrders);
+//        return serviceOrders;
+//    }
+@Override
+public ServiceOrders addNewServiceOrder(ServiceOrders serviceOrders) {
 
-
-        // Si la lista de componentes es nula, inicializarla
-        if (serviceOrders.getServiceOrderComponents() == null) {
-            serviceOrders.setServiceOrderComponents(new ArrayList<>());
-        }
-
-        // Para cada componente en la orden de servicio
-        for (ServiceOrderComponent soc : serviceOrders.getServiceOrderComponents()) {
-            logger.info("Procesando componente con id: " + soc.getComponent().getIdComponent());
-            // Recuperar el componente desde la base de datos usando su id
-            Component component = componentRepository.findById(soc.getComponent().getIdComponent())
-                    .orElseThrow(() -> new RuntimeException("Componente no encontrado"));
-
-            // Asociar el componente con la orden de servicio
-            soc.setServiceOrder(serviceOrders);
-
-            // Establecer el componente que se va a guardar
-            soc.setComponent(component);
-        }
-        serviceOrderRepository.save(serviceOrders);
-        logger.info("ServiceOrders JSON : " + serviceOrders);
-        return serviceOrders;
+    // Si la lista de componentes es nula, inicializarla
+    if (serviceOrders.getServiceOrderComponents() == null) {
+        serviceOrders.setServiceOrderComponents(new ArrayList<>());
     }
+
+    // Para cada componente en la orden de servicio
+    for (ServiceOrderComponent soc : serviceOrders.getServiceOrderComponents()) {
+        logger.info("Procesando componente con id: " + soc.getComponent().getIdComponent());
+
+        // Recuperar el componente desde la base de datos usando su id
+        Component component = componentRepository.findById(soc.getComponent().getIdComponent())
+                .orElseThrow(() -> new RuntimeException("Componente no encontrado"));
+
+        // Asociar el componente con la orden de servicio
+        soc.setServiceOrder(serviceOrders);
+
+        // Establecer el componente que se va a guardar
+        soc.setComponent(component);
+
+        // Verificar y ajustar el stock
+        int requestedQuantity = soc.getQuantity();  // Cantidad requerida por el servicio
+        int availableStock = component.getAmountComponent();  // Cantidad disponible en stock
+
+        if (availableStock >= requestedQuantity) {
+            // Suficiente stock, reducir la cantidad solicitada
+            component.setAmountComponent(availableStock - requestedQuantity);
+        } else {
+            // Insuficiente stock, reducir solo lo disponible y marcar la diferencia
+            soc.setQuantity(availableStock);  // Se ajusta la cantidad a lo disponible
+            component.setAmountComponent(0);   // Todo el stock disponible es consumido
+
+            logger.warn("Stock insuficiente para el componente " + component.getIdComponent() +
+                    ". Cantidad requerida: " + requestedQuantity + ", en stock: " + availableStock);
+        }
+
+        // Guardar los cambios en el stock del componente
+        componentRepository.save(component);
+    }
+
+    // Guardar la orden de servicio con las cantidades ajustadas
+    serviceOrderRepository.save(serviceOrders);
+    logger.info("ServiceOrders JSON : " + serviceOrders);
+    return serviceOrders;
+}
 
     @Override
     public void deleteServiceOrder(long id) {
