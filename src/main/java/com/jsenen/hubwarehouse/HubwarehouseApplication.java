@@ -7,6 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HubwarehouseApplication {
 
 	public static void main(String[] args) {
+
+
+
 		SpringApplication.run(HubwarehouseApplication.class, args);
 	}
 
