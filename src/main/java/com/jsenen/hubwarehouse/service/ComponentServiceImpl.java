@@ -160,7 +160,7 @@ public class ComponentServiceImpl implements ComponentService{
             componentToEdit.setDetailDescriptionCmp(component.getDetailDescriptionCmp());
         }
 
-        if (component.getAmountComponent() > 0) {
+        if (component.getAmountComponent() >= 0) {
             //Amount come with from WebApp on the API request
             componentToEdit.setAmountComponent(component.getAmountComponent());
             logger.info(TAG,"Component update Amount" + component.getAmountComponent());
