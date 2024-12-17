@@ -6,6 +6,7 @@ import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.repository.ComponentRepository;
 import com.jsenen.hubwarehouse.service.ComponentService;
 import com.jsenen.hubwarehouse.service.DigikeyService;
+import com.jsenen.hubwarehouse.service.MouserService;
 import com.jsenen.hubwarehouse.service.OAuth2Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,6 +40,9 @@ public class ComponentController {
 
     @Autowired
     ComponentRepository componentRepository;
+
+    @Autowired
+    MouserService mouserService;
 
 
     @Operation(
@@ -106,6 +110,18 @@ public class ComponentController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    //TODO MOUSER SERVICE SEARCH
+    @GetMapping("/mouser/{productNumber}")
+    public ResponseEntity<Component> getComponentFromMouser(@PathVariable String productNumber) {
+        logger.info("Searching in Mouser API for part number: " + productNumber);
+        Component component = mouserService.getComponentData(productNumber);
+        if (component != null) {
+            return ResponseEntity.ok(component);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
     @Operation(
             summary = "Update component by ID ",
