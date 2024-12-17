@@ -114,15 +114,14 @@ public class ComponentController {
     //TODO MOUSER SERVICE SEARCH
     @GetMapping("/mouser/{productNumber}")
     public ResponseEntity<Component> getComponentFromMouser(@PathVariable String productNumber) {
-        logger.info("Searching in Mouser API for part number: " + productNumber);
         Component component = mouserService.getComponentData(productNumber);
         if (component != null) {
             return ResponseEntity.ok(component);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
     }
+
     @Operation(
             summary = "Update component by ID ",
             description = "Retrieve component by ID  ",

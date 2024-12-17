@@ -10,7 +10,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,32 +29,23 @@ public class MouserService {
 
     public Component getComponentData(String productNumber) {
         try {
-            logger.info("Fetching data from Mouser API for part number: {}", productNumber);
+            logger.info("Fetching Mouser data for part number: {}", productNumber);
 
-            // Configuración de los headers
+            // Configurar Headers y Cuerpo
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setAccept(java.util.List.of(MediaType.APPLICATION_JSON));
 
-            // Cuerpo de la petición JSON
-            Map<String, Object> requestBody = new HashMap<>();
-            Map<String, String> searchRequest = new HashMap<>();
-            searchRequest.put("mouserPartNumber", productNumber);
-            searchRequest.put("partSearchOptions", "string");
-            requestBody.put("SearchByPartRequest", searchRequest);
+            String requestBody = "{ \"SearchByPartRequest\": { \"mouserPartNumber\": \"" + productNumber + "\", \"partSearchOptions\": \"string\" } }";
+            HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-
-            // URL con API Key
             String url = apiMouserUrl + "?apiKey=" + apiKey;
 
-            // Realizar la petición
-            ResponseEntity<String> response = restTemplate.exchange(
-                    url, HttpMethod.POST, entity, String.class);
+            // Llamada al backend de Mouser
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
-            // Parsear la respuesta JSON
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(response.getBody());
+            // Parsear el JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode root = objectMapper.readTree(response.getBody());
             JsonNode parts = root.path("SearchResults").path("Parts");
 
             if (parts.isEmpty()) {
@@ -60,26 +53,34 @@ public class MouserService {
                 return null;
             }
 
-            JsonNode part = parts.get(0); // Tomamos el primer resultado
+            JsonNode firstPart = parts.get(0);
 
-            // Mapear los datos a un objeto Component
+            // Mapear los datos a Component
             Component component = new Component();
-            component.setPartNumberComponent(part.path("MouserPartNumber").asText());
-            component.setDescriptionComponent(part.path("Description").asText());
-            component.setDetailDescriptionCmp(part.path("Category").asText());
-            component.setManufacturerComponent(part.path("Manufacturer").asText());
-            component.setImage(part.path("ImagePath").asText());
-            component.setDatasheets(part.path("DataSheetUrl").asText());
+            component.setPartNumberComponent(firstPart.path("MouserPartNumber").asText());
+            component.setDescriptionComponent(firstPart.path("Description").asText());
+            component.setDetailDescriptionCmp(firstPart.path("Category").asText());
+            component.setManufacturerComponent(firstPart.path("Manufacturer").asText());
+            component.setImage(firstPart.path("ImagePath").asText());
+            component.setDatasheets(firstPart.path("DataSheetUrl").asText());
 
-            // Atributos técnicos adicionales
-            component.setTechnicalAttributes(part.path("ProductAttributes").toString());
+            // Mapear atributos técnicos como JSON
+            List<String> technicalAttributes = new ArrayList<>();
+            JsonNode attributes = firstPart.path("ProductAttributes");
+            for (JsonNode attr : attributes) {
+                String attrName = attr.path("AttributeName").asText();
+                String attrValue = attr.path("AttributeValue").asText();
+                technicalAttributes.add("{\"AttributeName\":\"" + attrName + "\",\"AttributeValue\":\"" + attrValue + "\"}");
+            }
+            component.setTechnicalAttributes(technicalAttributes.toString());
 
-            logger.info("Successfully retrieved component data: {}", productNumber);
+            logger.info("Successfully fetched Mouser component: {}", component.getPartNumberComponent());
             return component;
 
         } catch (Exception e) {
-            logger.error("Error fetching component data from Mouser API", e);
+            logger.error("Error fetching data from Mouser API", e);
             return null;
         }
     }
+
 }
