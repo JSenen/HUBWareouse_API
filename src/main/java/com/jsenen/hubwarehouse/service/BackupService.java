@@ -1,5 +1,7 @@
 package com.jsenen.hubwarehouse.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,7 +12,11 @@ import java.util.Date;
 @Service
 public class BackupService {
 
+    private static final Logger logger = LoggerFactory.getLogger(BackupService.class);
+
     public void createDatabaseBackup() {
+
+
         try {
             // Configura el nombre y ubicación del archivo de respaldo
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -38,7 +44,7 @@ public class BackupService {
             Process process = pb.start();
             process.waitFor();
 
-            System.out.println("Backup creado exitosamente en " + backupFile.getAbsolutePath());
+            logger.info("Backup creado exitosamente en: {}", backupFile.getAbsolutePath());
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
