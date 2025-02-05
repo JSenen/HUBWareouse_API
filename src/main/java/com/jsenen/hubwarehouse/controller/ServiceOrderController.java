@@ -1,10 +1,8 @@
 package com.jsenen.hubwarehouse.controller;
 
-import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.ServiceOrders;
 import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.service.ServiceOrderService;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

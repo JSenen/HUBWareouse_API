@@ -6,7 +6,6 @@ import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.repository.ComponentRepository;
 import com.jsenen.hubwarehouse.service.ComponentService;
 import com.jsenen.hubwarehouse.service.DigikeyService;
-import com.jsenen.hubwarehouse.service.OAuth2Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

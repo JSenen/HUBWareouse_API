@@ -1,6 +1,5 @@
 package com.jsenen.hubwarehouse.service;
 
-import com.jsenen.hubwarehouse.controller.ComponentController;
 import com.jsenen.hubwarehouse.domain.Component;
 import com.jsenen.hubwarehouse.domain.ServiceOrderComponent;
 import com.jsenen.hubwarehouse.domain.ServiceOrders;

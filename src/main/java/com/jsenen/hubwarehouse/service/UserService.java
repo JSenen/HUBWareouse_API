@@ -10,4 +10,6 @@ public interface UserService {
     Iterable<User> findAll();
     User addOne(User user);
     List<User> searchByMail(String userMail);
+
+    User updateRolUser(long id, User user);
 }
