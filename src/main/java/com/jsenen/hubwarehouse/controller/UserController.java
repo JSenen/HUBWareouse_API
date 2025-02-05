@@ -43,6 +43,7 @@ public class UserController {
 
     @PatchMapping("/user/pass/{iduser}")
     public ResponseEntity<User> updateUserPass( @PathVariable("iduser") long id, @RequestBody User user) {
+        logger.info("UserController updatePass ID --> " + id);
         User updateUser = userService.updateRolUser(id, user);
         return ResponseEntity.status((HttpStatus.ACCEPTED)).body(updateUser);
     }

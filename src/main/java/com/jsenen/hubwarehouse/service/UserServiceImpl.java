@@ -53,10 +53,10 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new EntityNotFound("El usuario no se encuentra"));
 
         //La contraseña del usuario se encriptara en la base de datos
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        /* BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String plainPassword = user.getPasswordUser(); //Contraseña texto plano
-        String hashedPassword = passwordEncoder.encode(plainPassword);
-        modUser.setPasswordUser(hashedPassword);
+        String hashedPassword = passwordEncoder.encode(plainPassword); */
+        modUser.setPasswordUser(user.getPasswordUser());
         userRepository.save(modUser);
         return null;
     }
