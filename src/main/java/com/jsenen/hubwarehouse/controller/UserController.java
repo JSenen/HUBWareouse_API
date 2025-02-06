@@ -52,9 +52,16 @@ public class UserController {
     }
     @GetMapping("/user/check")
     public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
-        boolean exists = userService.emailExists(email); // ✅ Usa el boolean correcto
+        logger.info("UserController check user email --> " + email);
+        boolean exists = userService.emailExists(email); // Usa el boolean correcto
         Map<String, Boolean> response = new HashMap<>();
         response.put("exists", exists);
         return ResponseEntity.ok(response);
+    }
+    @DeleteMapping("user/{idUser}")
+    public ResponseEntity<Void> delUser(@PathVariable("idUser") long id) {
+        logger.info("Delete user ID: " + id);
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
     }
 }

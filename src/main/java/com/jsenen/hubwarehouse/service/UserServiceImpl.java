@@ -25,17 +25,18 @@ public class UserServiceImpl implements UserService{
     @Override
     public Iterable<User> findAll() {
         Iterable<User> userList = userRepository.findAll();
-        logger.info("User Service IMPL findAll --> " + userList);
+        logger.info("User Service findAll users --> " + userList);
         return userList;
     }
 
     @Override
     public User addOne(User user) {
         //La contraseña del usuario se encriptara en la base de datos
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        /*BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String plainPassword = user.getPasswordUser(); //Contraseña texto plano
         String hashedPassword = passwordEncoder.encode(plainPassword); // Contraseña Hash
-        user.setPasswordUser(hashedPassword);
+       */
+        user.setPasswordUser(user.getPasswordUser());
         return userRepository.save(user);
     }
 
@@ -67,7 +68,11 @@ public class UserServiceImpl implements UserService{
         return userRepository.findByUserIntroMail(email).isPresent();
     }
 
-
+    @Override
+    public void deleteUser(long id) {
+        logger.info("Delete user Id " + id);
+        userRepository.deleteById(id);
+    }
 
 
 }
