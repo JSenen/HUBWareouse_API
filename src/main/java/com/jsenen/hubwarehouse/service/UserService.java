@@ -12,4 +12,6 @@ public interface UserService {
     List<User> searchByMail(String userMail);
 
     User updateRolUser(long id, User user);
+
+    boolean emailExists(String email);
 }

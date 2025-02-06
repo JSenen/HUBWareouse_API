@@ -12,7 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @RestController
 public class UserController {
 
@@ -47,5 +50,11 @@ public class UserController {
         User updateUser = userService.updateRolUser(id, user);
         return ResponseEntity.status((HttpStatus.ACCEPTED)).body(updateUser);
     }
-
+    @GetMapping("/user/check")
+    public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
+        boolean exists = userService.emailExists(email); // ✅ Usa el boolean correcto
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+        return ResponseEntity.ok(response);
+    }
 }

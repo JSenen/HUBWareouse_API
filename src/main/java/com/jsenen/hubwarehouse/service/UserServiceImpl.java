@@ -61,5 +61,13 @@ public class UserServiceImpl implements UserService{
         return null;
     }
 
+    @Override
+    public boolean emailExists(String email) {
+        logger.info("Check if email exists: " + email);
+        return userRepository.findByUserIntroMail(email).isPresent();
+    }
+
+
+
 
 }
