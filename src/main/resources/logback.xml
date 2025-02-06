@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!-- Propiedades que se usará para indicar dónde almacenar los logs y cómo se llama el fichero -->
-    <property name="LOG_DIR" value="C:/Users/HUB/IdeaProjects/HUBWareouse_API/logs" />
+    <property name="LOG_DIR" value="C:/Users/Taller/IdeaProjects/HUBWareouse_API/logs" />
 
     <property name="LOG_NAME" value="api_hubwarehouse" />
 
