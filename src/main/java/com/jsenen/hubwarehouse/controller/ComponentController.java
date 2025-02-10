@@ -6,6 +6,7 @@ import com.jsenen.hubwarehouse.exception.EntityNotFound;
 import com.jsenen.hubwarehouse.repository.ComponentRepository;
 import com.jsenen.hubwarehouse.service.ComponentService;
 import com.jsenen.hubwarehouse.service.DigikeyService;
+import com.jsenen.hubwarehouse.service.MouserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,6 +39,9 @@ public class ComponentController {
 
     @Autowired
     ComponentRepository componentRepository;
+
+    @Autowired
+    MouserService mouserService;
 
 
     @Operation(
@@ -172,7 +176,16 @@ public class ComponentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Devolver 404 si no se encuentra
         }
     }
-
+    //TODO MOUSER SERVICE SEARCH
+    @GetMapping("/mouser/{productNumber}")
+    public ResponseEntity<Component> getComponentFromMouser(@PathVariable String productNumber) {
+        Component component = mouserService.getComponentData(productNumber);
+        if (component != null) {
+            return ResponseEntity.ok(component);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
     /* PARTIAL SEARCH */
     @CrossOrigin(origins = "http://localhost")
     @GetMapping("/component/search/partial")
