@@ -75,7 +75,7 @@ public class ComponentServiceImpl implements ComponentService{
         String url = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .queryParam("versionNumber", "1.3")
                 .queryParam("term", "manuPartNum:" + productNumber)
-                .queryParam("storeInfo.id", "es.farnell.com")
+                .queryParam("storeInfo.id", "uk.farnell.com")
                 .queryParam("resultsSettings.offset", "0")
                 .queryParam("resultsSettings.numberOfResults", "1")
                 .queryParam("resultsSettings.refinements.filters", "rohsCompliant,inStock")
