@@ -227,11 +227,22 @@ public class ComponentController {
     })
     @CrossOrigin(origins = "http://localhost")
     @PostMapping("/component/addnew")
-    public ResponseEntity<Component> addNewComponent(@RequestBody Component component) {
+    public ResponseEntity<Component> addNewComponent(@RequestBody Component component, @RequestParam(name = "forceNew", required = false, defaultValue = "false") boolean forceNew) {
         logger.info(" Add new component: " + component,TAG);
         // Llamar al servicio para agregar el nuevo componente
-        Component componentNew = componentService.addNewComponentFromWeb(component);
-        return ResponseEntity.status(HttpStatus.CREATED).body(componentNew);
+       // Component componentNew = componentService.addNewComponentFromWeb(component);
+       // return ResponseEntity.status(HttpStatus.CREATED).body(componentNew);
+        if (!forceNew) { // Si no se indica que es un nuevo componente forzado, validamos duplicados
+            Optional<Component> existingComponent = componentRepository.findByPartNumberComponent(component.getPartNumberComponent());
+            if (existingComponent.isPresent()) {
+                logger.info("El componente con part number " + component.getPartNumberComponent() + " ya existe y no se ha forzado la creación.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(existingComponent.get()); // Devuelve error 409 si el usuario no marcó la opción
+            }
+        }
+
+        // Si se forzó la creación o no existía, lo guardamos
+        Component newComponent = componentService.addNewComponentFromWeb(component);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newComponent);
     }
 
     @Operation(
