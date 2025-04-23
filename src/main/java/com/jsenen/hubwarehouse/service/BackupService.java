@@ -2,10 +2,10 @@ package com.jsenen.hubwarehouse.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,39 +14,49 @@ public class BackupService {
 
     private static final Logger logger = LoggerFactory.getLogger(BackupService.class);
 
+    // Backup diario a las 3:00 AM
+    @Scheduled(cron = "0 0 3 * * *")
+    public void scheduledBackup() {
+        logger.info("Iniciando backup programado");
+        createDatabaseBackup();
+        logger.info("Backup programado completado");
+    }
+
     public void createDatabaseBackup() {
-
-
         try {
-            // Configura el nombre y ubicación del archivo de respaldo
+            // Nombre del archivo con timestamp
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String backupPath = "backup/db_backup_" + timestamp + ".sql";
+            String backupDirPath = "/var/backups/hubwarehouse";
+            String backupFilePath = backupDirPath + "/db_backup_" + timestamp + ".sql";
 
-            // Crea el directorio de respaldo si no existe
-            File backupDir = new File("backup");
+            // Crear carpeta si no existe
+            File backupDir = new File(backupDirPath);
             if (!backupDir.exists()) {
                 backupDir.mkdirs();
             }
 
-            // Configura los argumentos para mysqldump
+            // Comando mysqldump
+
             ProcessBuilder pb = new ProcessBuilder(
-                    "C:\\xampp\\mysql\\bin\\mysqldump",
+                    "/usr/bin/mysqldump", // Ruta común en Linux (ajústala si es distinta)
                     "-u", "myuser",
-                    "-p" + "mypass",  // Usa "-p" + "password" sin espacio
+                    "-p" + "mypass",
                     "hubwarehousedb"
             );
 
-            // Establece la salida del proceso en un archivo
-            File backupFile = new File(backupPath);
-            pb.redirectOutput(backupFile);
+            pb.redirectOutput(new File(backupFilePath));
 
-            // Ejecuta el proceso
             Process process = pb.start();
-            process.waitFor();
+            int exitCode = process.waitFor();
 
-            logger.info("Backup creado exitosamente en: {}", backupFile.getAbsolutePath());
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            if (exitCode == 0) {
+                logger.info("Backup creado exitosamente en: {}", backupFilePath);
+            } else {
+                logger.error("Error al crear el backup. Código de salida: " + exitCode);
+            }
+
+        } catch (Exception e) {
+            logger.error("Excepción durante el backup: ", e);
         }
     }
 }
