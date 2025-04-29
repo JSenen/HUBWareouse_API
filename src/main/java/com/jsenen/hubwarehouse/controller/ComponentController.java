@@ -139,7 +139,7 @@ public class ComponentController {
             @ApiResponse(responseCode = "400", description = "Invalid",
                     content = @Content),
     })
-    @CrossOrigin(origins = "http://localhost")
+    @CrossOrigin(origins = {"http://localhost", "http://192.168.1.36"})
     @GetMapping("/components/search/{partNumber}")
     public ResponseEntity<Component> searchComponet(@Parameter(description = "Partnumber") @PathVariable("partNumber") String partNumber) {
         logger.info(" searchComponetByPartNumber: " + partNumber,TAG);
