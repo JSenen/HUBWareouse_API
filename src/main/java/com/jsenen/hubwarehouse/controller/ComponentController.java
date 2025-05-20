@@ -26,6 +26,8 @@ import java.util.Optional;
 
 @RestController
 @Tag(name = "Component", description = "This controller contains all the endpoints that can manage components")
+@CrossOrigin(origins = {"http://localhost", "http://192.168.1.36", "http://localhost:8085"})
+
 public class ComponentController {
 
     private final static Logger logger = LoggerFactory.getLogger(ComponentController.class);
@@ -121,9 +123,8 @@ public class ComponentController {
                     content = @Content),
     })
     @PutMapping("/component/edit/{idComponent}")
-    //@CrossOrigin(origins = "http://localhost")
     public ResponseEntity<Component> editComponent (@Parameter(description = "Id of Component") @PathVariable("idComponent") long id, @RequestBody Component component) throws EntityNotFound {
-        logger.info("Patch component id:" + id + "and component" + component);
+        logger.info(">>> EDIT COMPONENT - ID: " + id + " - " + component);
         Component componentToEdit = componentService.updateComponent(id, component);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(componentToEdit);
     }

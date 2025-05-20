@@ -16,6 +16,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/so")
+@CrossOrigin(origins = {"http://localhost", "http://192.168.1.36", "http://localhost:8085"})
 @Tag(name = "ServiceOrder", description = "This controller contains all the endpoints that can manage service orders")
 public class ServiceOrderController {
 
@@ -24,13 +25,13 @@ public class ServiceOrderController {
 
     @Autowired
     ServiceOrderService serviceOrderService;
-    @CrossOrigin(origins = "http://localhost")
+
     @GetMapping("")
     public ResponseEntity<Iterable<ServiceOrders>> getAll() {
         logger.info(" getAllServiceOrders()",TAG);
         return ResponseEntity.ok(serviceOrderService.findAll());
     }
-    @CrossOrigin(origins = "http://localhost")
+
     @GetMapping("/{IdServiceOrder}")
     public ResponseEntity<ServiceOrders> searchSOById(@PathVariable("IdServiceOrder") String idServiceOrder) {
         logger.info(" searchSObyID: " + idServiceOrder,TAG);
@@ -45,7 +46,6 @@ public class ServiceOrderController {
     }
 
     @PostMapping("/addnew")
-    @CrossOrigin(origins = "http://localhost")
     public ResponseEntity<ServiceOrders> addComponent(@RequestBody ServiceOrders serviceOrders) {
         logger.info("Fecha de inicio: " + serviceOrders.getDateStart());
         logger.info("Fecha de fin: " + serviceOrders.getDateFinish());
@@ -53,7 +53,7 @@ public class ServiceOrderController {
         ServiceOrders newServiceOrder = serviceOrderService.addNewServiceOrder(serviceOrders);
         return ResponseEntity.status(HttpStatus.CREATED).body(newServiceOrder);
     }
-    @CrossOrigin(origins = "http://localhost")
+
     @DeleteMapping("/delete/{idServiceOrder}")
     public ResponseEntity<Void> delServiceOrder(@PathVariable("idServiceOrder") long id) {
         logger.info("Delete component ID: " + id);
@@ -62,13 +62,12 @@ public class ServiceOrderController {
     }
 
     @PutMapping("/edit/{idServiceOrder}")
-    @CrossOrigin(origins = "http://localhost")
     public ResponseEntity<ServiceOrders> editServiceOrder(@PathVariable("idServiceOrder") long id, @RequestBody ServiceOrders serviceOrders) throws EntityNotFound {
         logger.info("Edit service order id: " + id + " and json: " + serviceOrders);
         ServiceOrders serviceOrdersToEdit = serviceOrderService.updateServiceOrder(id, serviceOrders);
         return ResponseEntity.status(HttpStatus.OK).body(serviceOrdersToEdit);  // Cambiar a 200 OK
     }
-    @CrossOrigin(origins = "http://localhost")
+
     @GetMapping("/component/{idComponent}")
     public ResponseEntity<List<ServiceOrders>> searchSObyComponent(@PathVariable("idComponent") long id) {
         logger.info("Search Service Orders by Component ID " + id);
