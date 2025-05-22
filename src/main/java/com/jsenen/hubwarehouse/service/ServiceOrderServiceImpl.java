@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ServiceOrderServiceImpl implements ServiceOrderService{
@@ -106,7 +104,7 @@ public ServiceOrders addNewServiceOrder(ServiceOrders serviceOrders) {
         return serviceOrderRepository.findById(idLong);
     }
 
-    @Override
+   /* @Override
     public ServiceOrders updateServiceOrder(long id, ServiceOrders serviceOrders) throws EntityNotFound {
         logger.info("Update Service Order id : " + id + " Service Order --> " + serviceOrders);
 
@@ -162,7 +160,79 @@ public ServiceOrders addNewServiceOrder(ServiceOrders serviceOrders) {
 
         // Guardar la orden de servicio actualizada
         return serviceOrderRepository.save(serviceOrderToEdit);
-    }
+    } */
+   @Override
+   public ServiceOrders updateServiceOrder(long id, ServiceOrders serviceOrders) throws EntityNotFound {
+       logger.info("Update Service Order id : " + id + " Service Order --> " + serviceOrders);
+
+       // Recuperar la orden de servicio existente desde la base de datos
+       ServiceOrders serviceOrderToEdit = serviceOrderRepository.findById(id)
+               .orElseThrow(() -> new EntityNotFound("La orden de servicio no se encuentra"));
+
+       // Actualizar los campos principales
+       if (serviceOrders.getStatus() != null) {
+           serviceOrderToEdit.setStatus(serviceOrders.getStatus());
+       }
+
+       if (serviceOrders.getDateStart() != null) {
+           serviceOrderToEdit.setDateStart(serviceOrders.getDateStart());
+       }
+
+       if (serviceOrders.getDateFinish() != null) {
+           serviceOrderToEdit.setDateFinish(serviceOrders.getDateFinish());
+       }
+
+       // Manejar los componentes si se proporcionan
+       if (serviceOrders.getServiceOrderComponents() != null) {
+           List<ServiceOrderComponent> existingComponents = serviceOrderToEdit.getServiceOrderComponents();
+           Map<Long, Integer> previousQuantities = new HashMap<>();
+           for (ServiceOrderComponent oldComp : existingComponents) {
+               previousQuantities.put(oldComp.getComponent().getIdComponent(), oldComp.getQuantity());
+           }
+
+           List<ServiceOrderComponent> updatedComponents = new ArrayList<>();
+
+           for (ServiceOrderComponent newComponent : serviceOrders.getServiceOrderComponents()) {
+               Long compId = newComponent.getComponent().getIdComponent();
+               Component componentFromDb = componentRepository.findById(compId)
+                       .orElseThrow(() -> new EntityNotFound("El componente no se encuentra"));
+
+               int newQty = newComponent.getQuantity();
+               int oldQty = previousQuantities.getOrDefault(compId, 0);
+               int diff = newQty - oldQty;
+
+               logger.info("Componente ID: " + compId + " | cantidad previa: " + oldQty + ", nueva: " + newQty + ", diferencia: " + diff);
+
+               if (diff != 0) {
+                   int currentStock = componentFromDb.getAmountComponent();
+                   int adjustedStock = currentStock - diff;
+
+                   if (adjustedStock < 0) {
+                       throw new RuntimeException("Stock insuficiente para el componente " + componentFromDb.getPartNumberComponent());
+                   }
+
+                   componentFromDb.setAmountComponent(adjustedStock);
+                   componentRepository.save(componentFromDb);
+
+                   logger.info("Stock actualizado para componente " + compId + ": " + adjustedStock);
+               }
+
+               newComponent.setComponent(componentFromDb);
+               newComponent.setServiceOrder(serviceOrderToEdit);
+               updatedComponents.add(newComponent);
+           }
+
+           // Reemplazar componentes en la orden
+           serviceOrderToEdit.getServiceOrderComponents().clear();
+           serviceOrderToEdit.getServiceOrderComponents().addAll(updatedComponents);
+       }
+
+       // Guardar la orden de servicio actualizada
+       ServiceOrders saved = serviceOrderRepository.save(serviceOrderToEdit);
+       logger.info("Orden de servicio actualizada correctamente: " + saved.getOrderNumber());
+       return saved;
+   }
+
 
     @Override
     public List<ServiceOrders> searchByComponentId(long idComponent) {
